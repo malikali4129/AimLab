@@ -99,12 +99,28 @@ function initPasswordChecker(root) {
   root.innerHTML = `
     <div class="password-card">
       <label for="password-input" class="download-label">Enter password</label>
-      <input id="password-input" class="download-input" type="password" placeholder="Type your password" autocomplete="off" />
+      <div class="password-input-wrap">
+        <input id="password-input" class="download-input" type="password" placeholder="Type your password" autocomplete="off" />
+        <button type="button" class="password-toggle-icon" data-password-toggle aria-label="Show password" title="Show password">
+          <svg class="password-toggle-icon-svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M1.5 12s3.5-6 10.5-6 10.5 6 10.5 6-3.5 6-10.5 6S1.5 12 1.5 12Z"></path>
+            <circle cx="12" cy="12" r="3.2"></circle>
+          </svg>
+        </button>
+      </div>
 
       <div class="password-actions">
         <button type="button" class="cta-button" data-password-copy>Copy</button>
         <button type="button" class="ghost-button" data-password-generate>Generate</button>
-        <button type="button" class="ghost-button" data-password-toggle>Show</button>
+        <a
+          href="https://aimpass.pages.dev/"
+          class="ghost-button password-ped-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open Password Encryptor and Decryptor website"
+        >
+          Open PED Tool ↗
+        </a>
         <button type="button" class="ghost-button" data-password-salt-open>Salt</button>
       </div>
 
@@ -143,6 +159,13 @@ function initPasswordChecker(root) {
   const saltGenerateBtn = root.querySelector("[data-password-salt-generate]");
   const meter = root.querySelector("#password-meter");
   const output = root.querySelector("#password-result");
+
+  function updateToggleIcon(isVisible) {
+    toggleBtn.classList.toggle("is-visible", isVisible);
+    const toggleLabel = isVisible ? "Hide password" : "Show password";
+    toggleBtn.setAttribute("aria-label", toggleLabel);
+    toggleBtn.setAttribute("title", toggleLabel);
+  }
 
   function openSaltModal() {
     saltModal.setAttribute("aria-hidden", "false");
@@ -207,14 +230,14 @@ function initPasswordChecker(root) {
   generateBtn.addEventListener("click", () => {
     input.value = generatePassword();
     input.type = "password";
-    toggleBtn.textContent = "Show";
+    updateToggleIcon(false);
     render();
   });
 
   toggleBtn.addEventListener("click", () => {
     const isPassword = input.type === "password";
     input.type = isPassword ? "text" : "password";
-    toggleBtn.textContent = isPassword ? "Hide" : "Show";
+    updateToggleIcon(isPassword);
   });
 
   saltOpenBtn.addEventListener("click", openSaltModal);
@@ -229,7 +252,7 @@ function initPasswordChecker(root) {
     const finalSalt = `AIMTECHmalik@${websiteName}.com`;
     input.value = finalSalt;
     input.type = "password";
-    toggleBtn.textContent = "Show";
+    updateToggleIcon(false);
     websiteNameInput.value = "";
     closeSaltModal();
     render();
@@ -247,6 +270,7 @@ function initPasswordChecker(root) {
     }
   });
 
+  updateToggleIcon(false);
   render();
 }
 
