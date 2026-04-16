@@ -21,14 +21,14 @@ const MODULE_REGISTRY = [
     shortTitle: "Home",
     menuTitle: "Home"
   },
-  {
-    href: "birthday.html",
-    icon: "🎂",
-    shortTitle: "Birthday",
-    menuTitle: "Birthday",
-    homeTitle: "Birthday Calculator",
-    homeDescription: "Find your age and next birthday"
-  },
+  // {
+  //   href: "birthday.html",
+  //   icon: "🎂",
+  //   shortTitle: "Birthday",
+  //   menuTitle: "Birthday",
+  //   homeTitle: "Birthday Calculator",
+  //   homeDescription: "Find your age and next birthday"
+  // },
   {
     href: "download-speed.html",
     icon: "⚡",
@@ -78,20 +78,20 @@ const MODULE_REGISTRY = [
     homeDescription: "Track clock cycles, events, moon phases, and long-horizon milestones"
   },
   {
-    href: "about.html",
-    icon: "👤",
-    shortTitle: "About",
-    menuTitle: "About Me",
-    homeTitle: "About Me",
-    homeDescription: "Sample bio section with a functional contact form"
-  },
-  {
     href: "life-stats.html",
     icon: "🧬",
     shortTitle: "Stats",
     menuTitle: "Life Stats",
     homeTitle: "Life Stats",
     homeDescription: "Scroll through live stats calculated from your birth date"
+  },
+  {
+    href: "about.html",
+    icon: "👤",
+    shortTitle: "About",
+    menuTitle: "About Me",
+    homeTitle: "About Me",
+    homeDescription: "Sample bio section with a functional contact form"
   }
 ];
 
