@@ -7,6 +7,7 @@ const gpaModuleRoot = document.getElementById("gpa-module");
 const roasterModuleRoot = document.getElementById("roaster-module");
 const wheelModuleRoot = document.getElementById("wheel-module");
 const lifeProgressModuleRoot = document.getElementById("life-progress-module");
+const aboutModuleRoot = document.getElementById("about-module");
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
 let revealItems = [];
@@ -74,6 +75,14 @@ const MODULE_REGISTRY = [
     menuTitle: "Life Tracker",
     homeTitle: "Life Progress Tracker",
     homeDescription: "Track clock cycles, events, moon phases, and long-horizon milestones"
+  },
+  {
+    href: "about.html",
+    icon: "👤",
+    shortTitle: "About",
+    menuTitle: "About Me",
+    homeTitle: "About Me",
+    homeDescription: "Sample bio section with a functional contact form"
   }
 ];
 
@@ -296,6 +305,9 @@ if (window.initWheelPicker && wheelModuleRoot) {
 }
 if (window.initLifeProgressTracker && lifeProgressModuleRoot) {
   window.initLifeProgressTracker(lifeProgressModuleRoot);
+}
+if (window.initAboutMe && aboutModuleRoot) {
+  window.initAboutMe(aboutModuleRoot);
 }
 setupMobileMenu();
 setupPageSwitchTransitions();
