@@ -909,6 +909,88 @@ body.page-transition-out .particles {
   font-size: 0.9rem;
 }
 
+.life-stats-overlay {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  max-height: 100dvh;
+  z-index: 520;
+  background:
+    radial-gradient(circle at top right, rgba(95, 251, 255, 0.16), transparent 35%),
+    radial-gradient(circle at bottom left, rgba(157, 125, 255, 0.16), transparent 42%),
+    linear-gradient(170deg, rgba(7, 10, 24, 0.98), rgba(5, 7, 16, 0.98));
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  display: grid;
+  grid-template-rows: auto 1fr;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.life-stats-overlay[hidden] {
+  display: none !important;
+}
+
+.life-stats-overlay.is-open {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.life-stats-overlay-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  background: rgba(8, 10, 20, 0.72);
+}
+
+.life-stats-overlay-title {
+  margin: 0;
+  color: #ecf2ff;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.life-stats-close {
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 140ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.life-stats-close:hover {
+  background: rgba(95, 251, 255, 0.14);
+  border-color: rgba(95, 251, 255, 0.4);
+}
+
+.life-stats-close:active {
+  transform: scale(0.94);
+}
+
+.life-stats-overlay-scroll {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 18px clamp(14px, 3vw, 32px) 28px;
+  padding-bottom: calc(28px + env(safe-area-inset-bottom));
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
 .life-stats-story {
   position: relative;
   display: grid;
@@ -948,6 +1030,8 @@ body.page-transition-out .particles {
 
 .life-stats-section {
   min-height: clamp(420px, 78vh, 720px);
+  width: min(100%, 980px);
+  margin: 0 auto;
   border-radius: 26px;
   padding: clamp(18px, 3vw, 34px);
   border: 1px solid rgba(255, 255, 255, 0.12);
@@ -958,6 +1042,8 @@ body.page-transition-out .particles {
   gap: 28px;
   opacity: 0.58;
   transform: scale(0.98);
+  box-shadow: none;
+  contain: layout paint;
   transition: opacity 260ms ease, transform 260ms ease, border-color 260ms ease, box-shadow 260ms ease;
 }
 
@@ -982,12 +1068,91 @@ body.page-transition-out .particles {
   text-align: center;
 }
 
+.life-stats-title {
+  margin: 0;
+  color: #f2f6ff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.life-stats-rate {
+  margin: 0;
+  color: rgba(95, 251, 255, 0.92);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+}
+
 .life-stats-statement {
   margin: 0;
   font-size: clamp(1.08rem, 2.8vw, 2.2rem);
   font-weight: 700;
   line-height: 1.38;
   color: #f5f7ff;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: baseline;
+  gap: 0.16em;
+  max-width: 100%;
+}
+
+.life-stats-dial {
+  position: relative;
+  display: inline-block;
+  min-width: 1ch;
+  min-height: 1.35em;
+  overflow: hidden;
+  margin: 0;
+  vertical-align: -0.08em;
+  flex: 0 0 auto;
+  white-space: nowrap;
+  font: inherit;
+  line-height: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.life-stats-dial::after {
+  content: attr(data-value);
+  display: block;
+  visibility: hidden;
+  white-space: nowrap;
+  font: inherit;
+  line-height: inherit;
+  font-variant-numeric: inherit;
+}
+
+.life-stats-dial-item {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  white-space: nowrap;
+  color: inherit;
+  text-shadow: none;
+  will-change: transform, opacity;
+  font: inherit;
+  line-height: inherit;
+  font-variant-numeric: inherit;
+}
+
+.life-stats-dial-item.is-entering {
+  transform: translateY(112%);
+  opacity: 0;
+}
+
+.life-stats-dial-item.is-current {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 260ms cubic-bezier(0.2, 0.85, 0.3, 1), opacity 220ms ease;
+}
+
+.life-stats-dial-item.is-leaving {
+  transform: translateY(-112%);
+  opacity: 0;
+  transition: transform 260ms cubic-bezier(0.2, 0.85, 0.3, 1), opacity 220ms ease;
 }
 
 .life-stats-meta {
@@ -1071,6 +1236,10 @@ body.page-transition-out .particles {
   line-height: 1;
   filter: drop-shadow(0 0 20px rgba(95, 251, 255, 0.25));
   animation: lifeStatsFloat 2.8s ease-in-out infinite;
+}
+
+body.life-stats-overlay-open {
+  overflow: hidden;
 }
 
 @keyframes lifeStatsPulse {
@@ -2487,6 +2656,20 @@ body.page-transition-out .particles {
     animation: none !important;
   }
 
+  .life-stats-dial-item.is-current,
+  .life-stats-dial-item.is-leaving {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
+  .life-stats-overlay,
+  .life-stats-overlay.is-open {
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+
   .page-loader,
   .app-shell,
   [data-reveal],
@@ -2507,6 +2690,10 @@ body.page-transition-out .particles {
 
   .life-stats-story {
     grid-template-columns: 1fr;
+  }
+
+  .life-stats-overlay-scroll {
+    padding-inline: 12px;
   }
 
   .life-stats-progress {
@@ -2562,14 +2749,62 @@ body.page-transition-out .particles {
     grid-template-columns: 1fr;
   }
 
+  .life-stats-overlay-head {
+    padding: 10px 12px;
+  }
+
+  .life-stats-overlay-title {
+    display: none;
+  }
+
+  body.life-stats-overlay-open .topbar,
+  body.life-stats-overlay-open #menu-dropdown,
+  body.life-stats-overlay-open .feature-copy {
+    display: none !important;
+  }
+
+  body.life-stats-overlay-open .feature-shell {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .life-stats-close {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    position: relative;
+    z-index: 4;
+    touch-action: manipulation;
+  }
+
   .life-stats-section {
-    min-height: 70vh;
+    min-height: 56vh;
     border-radius: 20px;
     gap: 18px;
+    padding: 12px;
+    width: 100%;
   }
 
   .life-stats-visual {
     min-height: 120px;
+  }
+
+  .life-stats-statement {
+    font-size: clamp(1rem, 6vw, 1.5rem);
+    line-height: 1.3;
+    word-break: normal;
+  }
+
+  .life-stats-rate,
+  .life-stats-meta,
+  .life-stats-title {
+    font-size: 0.72rem;
+  }
+
+  .life-stats-overlay-scroll {
+    padding: 10px 6px calc(18px + env(safe-area-inset-bottom));
   }
 
   .life-stats-calendar-card {
@@ -2905,6 +3140,33 @@ body.page-transition-out .particles {
 
   .app-card p {
     font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 430px) {
+  .life-stats-section {
+    min-height: 52vh;
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .life-stats-statement {
+    font-size: 0.92rem;
+    line-height: 1.26;
+  }
+
+  .life-stats-dial {
+    min-height: 1.28em;
+  }
+
+  .life-stats-overlay-title {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+  }
+
+  .life-stats-close {
+    width: 34px;
+    height: 34px;
   }
 }
 

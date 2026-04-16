@@ -5,30 +5,165 @@ const MS_DAY = 24 * MS_HOUR;
 const DAYS_PER_YEAR = 365.2425;
 const MOON_CYCLE_DAYS = 29.530588;
 
+const HEARTBEATS_PER_SECOND = 1.2;
+const BREATHS_PER_SECOND = 0.27;
+const BLINKS_PER_SECOND = 0.28;
+
 const fastNumber = new Intl.NumberFormat("en-US");
 const decimalNumber = new Intl.NumberFormat("en-US", { maximumFractionDigits: 2 });
 
 const STAT_DEFINITIONS = [
-  { id: "days", visual: "calendar", updater: "slow", statement: (s) => `A lot has happened in the ${fastNumber.format(s.daysAlive)} days since you were born.` },
-  { id: "seconds", visual: "clock", updater: "fast", statement: (s) => `You have experienced around ${fastNumber.format(s.secondsAlive)} seconds of life.` },
-  { id: "heartbeats", visual: "pulse", updater: "fast", statement: (s) => `Your heart has beaten about ${fastNumber.format(s.heartbeats)} times so far.` },
-  { id: "breaths", visual: "lungs", updater: "fast", statement: (s) => `You have taken about ${fastNumber.format(s.breaths)} breaths.` },
-  { id: "blood", visual: "blood", updater: "fast", statement: (s) => `Your body has produced about ${fastNumber.format(s.bloodCells)} red blood cells.` },
-  { id: "sleep", visual: "sleep", updater: "slow", statement: (s) => `You have spent roughly ${fastNumber.format(s.sleepHours)} hours sleeping.` },
-  { id: "blinks", visual: "eye", updater: "fast", statement: (s) => `You have blinked around ${fastNumber.format(s.blinks)} times.` },
-  { id: "steps", visual: "steps", updater: "slow", statement: (s) => `If your pace is average, you have walked about ${fastNumber.format(s.steps)} steps.` },
-  { id: "water", visual: "water", updater: "slow", statement: (s) => `You have likely consumed about ${fastNumber.format(s.waterLiters)} liters of water.` },
-  { id: "weekends", visual: "weekend", updater: "slow", statement: (s) => `You have lived through around ${fastNumber.format(s.weekendDays)} weekend days.` },
-  { id: "moons", visual: "moon", updater: "slow", statement: (s) => `The moon has completed about ${decimalNumber.format(s.moonCycles)} cycles in your lifetime.` },
-  { id: "seasons", visual: "season", updater: "slow", statement: (s) => `You have passed through nearly ${fastNumber.format(s.seasons)} seasons.` },
-  { id: "birthdays", visual: "cake", updater: "slow", statement: (s) => `You have celebrated ${fastNumber.format(s.birthdays)} birthdays.` },
-  { id: "orbit", visual: "orbit", updater: "slow", statement: (s) => `You have traveled around the sun about ${decimalNumber.format(s.yearsAlive)} times.` },
-  { id: "next-birthday", visual: "countdown", updater: "fast", statement: (s) => `Your next birthday is in ${s.nextBirthdayCountdown}.` }
+  {
+    id: "days",
+    title: "Days Alive",
+    visual: "calendar",
+    updater: "slow",
+    prefix: "A lot has happened in the ",
+    value: (s) => fastNumber.format(s.daysAlive),
+    suffix: " days since you were born.",
+    rateLabel: "Daily milestone"
+  },
+  {
+    id: "seconds",
+    title: "Seconds Lived",
+    visual: "clock",
+    updater: "fast",
+    prefix: "You have experienced around ",
+    value: (s) => fastNumber.format(s.secondsAlive),
+    suffix: " seconds of life.",
+    rateLabel: "Updates every second"
+  },
+  {
+    id: "heartbeats",
+    title: "Heart Beat",
+    visual: "pulse",
+    updater: "fast",
+    prefix: "Your heart has beaten about ",
+    value: (s) => fastNumber.format(s.heartbeats),
+    suffix: " times so far.",
+    rateLabel: `~${HEARTBEATS_PER_SECOND.toFixed(1)} beats/sec`
+  },
+  {
+    id: "breaths",
+    title: "Lung Breaths",
+    visual: "lungs",
+    updater: "fast",
+    prefix: "You have taken about ",
+    value: (s) => fastNumber.format(s.breaths),
+    suffix: " breaths.",
+    rateLabel: `~${BREATHS_PER_SECOND.toFixed(2)} breaths/sec`
+  },
+  {
+    id: "blood",
+    title: "Red Blood Cells",
+    visual: "blood",
+    updater: "fast",
+    prefix: "Your body has produced about ",
+    value: (s) => fastNumber.format(s.bloodCells),
+    suffix: " red blood cells.",
+    rateLabel: "Modeled biological estimate"
+  },
+  {
+    id: "sleep",
+    title: "Sleep Hours",
+    visual: "sleep",
+    updater: "slow",
+    prefix: "You have spent roughly ",
+    value: (s) => fastNumber.format(s.sleepHours),
+    suffix: " hours sleeping.",
+    rateLabel: "Assumes one-third of time asleep"
+  },
+  {
+    id: "blinks",
+    title: "Blink Count",
+    visual: "eye",
+    updater: "fast",
+    prefix: "You have blinked around ",
+    value: (s) => fastNumber.format(s.blinks),
+    suffix: " times.",
+    rateLabel: `~${BLINKS_PER_SECOND.toFixed(2)} blinks/sec`
+  },
+  {
+    id: "steps",
+    title: "Steps Walked",
+    visual: "steps",
+    updater: "slow",
+    prefix: "If your pace is average, you have walked about ",
+    value: (s) => fastNumber.format(s.steps),
+    suffix: " steps.",
+    rateLabel: "Estimated with 6,000 steps/day"
+  },
+  {
+    id: "water",
+    title: "Water Intake",
+    visual: "water",
+    updater: "slow",
+    prefix: "You have likely consumed about ",
+    value: (s) => fastNumber.format(s.waterLiters),
+    suffix: " liters of water.",
+    rateLabel: "Estimated with 2.3L/day"
+  },
+  {
+    id: "weekends",
+    title: "Weekend Days",
+    visual: "weekend",
+    updater: "slow",
+    prefix: "You have lived through around ",
+    value: (s) => fastNumber.format(s.weekendDays),
+    suffix: " weekend days.",
+    rateLabel: "Two out of seven days"
+  },
+  {
+    id: "moons",
+    title: "Moon Cycles",
+    visual: "moon",
+    updater: "slow",
+    prefix: "The moon has completed about ",
+    value: (s) => decimalNumber.format(s.moonCycles),
+    suffix: " cycles in your lifetime.",
+    rateLabel: "Synodic month estimate"
+  },
+  {
+    id: "seasons",
+    title: "Seasons Passed",
+    visual: "season",
+    updater: "slow",
+    prefix: "You have passed through nearly ",
+    value: (s) => fastNumber.format(s.seasons),
+    suffix: " seasons.",
+    rateLabel: "Four seasons each year"
+  },
+  {
+    id: "birthdays",
+    title: "Birthdays Celebrated",
+    visual: "cake",
+    updater: "slow",
+    prefix: "You have celebrated ",
+    value: (s) => fastNumber.format(s.birthdays),
+    suffix: " birthdays.",
+    rateLabel: "Yearly milestone"
+  },
+  {
+    id: "orbit",
+    title: "Solar Orbits",
+    visual: "orbit",
+    updater: "slow",
+    prefix: "You have traveled around the sun about ",
+    value: (s) => decimalNumber.format(s.yearsAlive),
+    suffix: " times.",
+    rateLabel: "Earth orbit count"
+  },
+  {
+    id: "next-birthday",
+    title: "Next Birthday",
+    visual: "countdown",
+    updater: "fast",
+    prefix: "Your next birthday is in ",
+    value: (s) => s.nextBirthdayCountdown,
+    suffix: ".",
+    rateLabel: "Live countdown"
+  }
 ];
-
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value));
-}
 
 function isValidDob(date) {
   if (!(date instanceof Date) || Number.isNaN(date.getTime())) return false;
@@ -81,8 +216,9 @@ function formatCountdown(ms) {
 
 function getLifeSnapshot(dob, now) {
   const elapsedMs = Math.max(0, now.getTime() - dob.getTime());
-  const secondsAlive = Math.floor(elapsedMs / MS_SECOND);
-  const minutesAlive = Math.floor(elapsedMs / MS_MINUTE);
+  const elapsedSeconds = elapsedMs / MS_SECOND;
+  const secondsAlive = Math.floor(elapsedSeconds);
+  const minutesAlive = elapsedMs / MS_MINUTE;
   const hoursAlive = Math.floor(elapsedMs / MS_HOUR);
   const daysAlive = Math.floor(elapsedMs / MS_DAY);
   const yearsAlive = elapsedMs / (DAYS_PER_YEAR * MS_DAY);
@@ -94,11 +230,11 @@ function getLifeSnapshot(dob, now) {
     secondsAlive,
     daysAlive,
     yearsAlive,
-    heartbeats: Math.floor(minutesAlive * 72),
-    breaths: Math.floor(minutesAlive * 16),
+    heartbeats: Math.floor(elapsedSeconds * HEARTBEATS_PER_SECOND),
+    breaths: Math.floor(elapsedSeconds * BREATHS_PER_SECOND),
     bloodCells: Math.floor(secondsAlive * 2400000),
     sleepHours: Math.floor(hoursAlive * 0.33),
-    blinks: Math.floor(minutesAlive * 15),
+    blinks: Math.floor(elapsedSeconds * BLINKS_PER_SECOND),
     steps: Math.floor(daysAlive * 6000),
     waterLiters: Math.floor(daysAlive * 2.3),
     weekendDays: Math.floor(daysAlive * (2 / 7)),
@@ -142,6 +278,49 @@ function createVisualMarkup(type, dob) {
   return `<div class="life-stats-icon-wrap" aria-hidden="true">${visualEmoji(type)}</div>`;
 }
 
+function animateDial(dialElement, newValue) {
+  if (!dialElement) return;
+
+  const next = String(newValue);
+  const previous = dialElement.dataset.value || "";
+
+  if (!previous) {
+    const first = document.createElement("span");
+    first.className = "life-stats-dial-item is-current";
+    first.textContent = next;
+    dialElement.innerHTML = "";
+    dialElement.appendChild(first);
+    dialElement.dataset.value = next;
+    return;
+  }
+
+  if (previous === next) {
+    return;
+  }
+
+  const currentNode = dialElement.querySelector(".life-stats-dial-item.is-current");
+  if (currentNode) {
+    currentNode.classList.remove("is-current");
+    currentNode.classList.add("is-leaving");
+    window.setTimeout(() => {
+      if (currentNode.parentElement === dialElement) {
+        currentNode.remove();
+      }
+    }, 320);
+  }
+
+  const incoming = document.createElement("span");
+  incoming.className = "life-stats-dial-item is-entering";
+  incoming.textContent = next;
+  dialElement.appendChild(incoming);
+  requestAnimationFrame(() => {
+    incoming.classList.remove("is-entering");
+    incoming.classList.add("is-current");
+  });
+
+  dialElement.dataset.value = next;
+}
+
 function visualEmoji(type) {
   const map = {
     clock: "⏱️",
@@ -168,6 +347,8 @@ function createLifeStatsModule(root) {
   let currentDob = null;
   let updateTimer = null;
   let observer = null;
+  let closeTimer = null;
+  let isClosing = false;
 
   root.innerHTML = `
     <section class="life-stats-shell">
@@ -188,9 +369,18 @@ function createLifeStatsModule(root) {
         </form>
       </article>
 
-      <section class="life-stats-story" data-life-stats-story hidden>
-        <div class="life-stats-progress" data-life-progress aria-hidden="true"></div>
-        <div class="life-stats-sections" data-life-sections></div>
+      <section class="life-stats-overlay" data-life-stats-overlay hidden aria-hidden="true">
+        <header class="life-stats-overlay-head">
+          <p class="life-stats-overlay-title">Life Stats Timeline</p>
+          <button type="button" class="life-stats-close" data-life-stats-close aria-label="Close Life Stats">✕</button>
+        </header>
+
+        <div class="life-stats-overlay-scroll" data-life-stats-scroll>
+          <div class="life-stats-story" data-life-stats-story>
+            <div class="life-stats-progress" data-life-progress aria-hidden="true"></div>
+            <div class="life-stats-sections" data-life-sections></div>
+          </div>
+        </div>
       </section>
     </section>
   `;
@@ -198,6 +388,9 @@ function createLifeStatsModule(root) {
   const gate = root.querySelector("[data-life-stats-gate]");
   const form = root.querySelector("[data-life-stats-form]");
   const status = root.querySelector("[data-life-status]");
+  const overlay = root.querySelector("[data-life-stats-overlay]");
+  const closeButton = root.querySelector("[data-life-stats-close]");
+  const overlayScroll = root.querySelector("[data-life-stats-scroll]");
   const story = root.querySelector("[data-life-stats-story]");
   const sectionsRoot = root.querySelector("[data-life-sections]");
   const progress = root.querySelector("[data-life-progress]");
@@ -233,7 +426,11 @@ function createLifeStatsModule(root) {
     if (!row || !currentDob) return;
 
     const snapshot = getLifeSnapshot(currentDob, now);
-    row.statement.textContent = row.definition.statement(snapshot);
+    row.title.textContent = row.definition.title;
+    row.prefix.textContent = row.definition.prefix;
+    row.suffix.textContent = row.definition.suffix;
+    row.rate.textContent = row.definition.rateLabel;
+    animateDial(row.dial, row.definition.value(snapshot));
 
     if (row.definition.id === "next-birthday") {
       row.meta.textContent = `Target: ${snapshot.nextBirthday.toLocaleDateString(undefined, { month: "long", day: "numeric", year: "numeric" })}`;
@@ -276,18 +473,32 @@ function createLifeStatsModule(root) {
           ${createVisualMarkup(definition.visual, currentDob)}
         </div>
         <div class="life-stats-text">
-          <p class="life-stats-statement">Loading...</p>
+          <p class="life-stats-title">${definition.title}</p>
+          <p class="life-stats-rate">${definition.rateLabel}</p>
+          <p class="life-stats-statement">
+            <span class="life-stats-prefix"></span>
+            <span class="life-stats-dial" data-life-dial></span>
+            <span class="life-stats-suffix"></span>
+          </p>
           <p class="life-stats-meta">Calculating...</p>
         </div>
       `;
 
-      const statement = section.querySelector(".life-stats-statement");
+      const title = section.querySelector(".life-stats-title");
+      const rate = section.querySelector(".life-stats-rate");
+      const prefix = section.querySelector(".life-stats-prefix");
+      const dial = section.querySelector("[data-life-dial]");
+      const suffix = section.querySelector(".life-stats-suffix");
       const meta = section.querySelector(".life-stats-meta");
 
       sectionMap.set(definition.id, {
         definition,
         section,
-        statement,
+        title,
+        rate,
+        prefix,
+        dial,
+        suffix,
         meta
       });
 
@@ -324,8 +535,9 @@ function createLifeStatsModule(root) {
         updateSection(activeStatId, new Date());
       },
       {
-        threshold: [0.35, 0.55, 0.75],
-        rootMargin: "0px 0px -10% 0px"
+        root: overlayScroll,
+        threshold: [0.5, 0.65, 0.8],
+        rootMargin: "-8% 0px -18% 0px"
       }
     );
 
@@ -347,13 +559,38 @@ function createLifeStatsModule(root) {
 
   function startStory(dob) {
     currentDob = dob;
+    isClosing = false;
+    if (closeTimer) {
+      window.clearTimeout(closeTimer);
+      closeTimer = null;
+    }
     gate.hidden = true;
-    story.hidden = false;
+    overlay.hidden = false;
+    overlay.setAttribute("aria-hidden", "false");
+    document.body.classList.add("life-stats-overlay-open");
+    requestAnimationFrame(() => {
+      overlay.classList.add("is-open");
+    });
+    overlayScroll.scrollTop = 0;
 
     clearRuntime();
     buildStory();
     updateTimer = window.setInterval(tick, 1000);
     tick();
+  }
+
+  function closeStory() {
+    if (isClosing) return;
+    isClosing = true;
+    clearRuntime();
+    overlay.classList.remove("is-open");
+    closeTimer = window.setTimeout(() => {
+      overlay.hidden = true;
+      overlay.setAttribute("aria-hidden", "true");
+      gate.hidden = false;
+      document.body.classList.remove("life-stats-overlay-open");
+      isClosing = false;
+    }, 220);
   }
 
   form.addEventListener("submit", (event) => {
@@ -370,8 +607,25 @@ function createLifeStatsModule(root) {
   });
 
   document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "visible" && currentDob && !story.hidden) {
+    if (document.visibilityState === "visible" && currentDob && !overlay.hidden) {
       tick();
+    }
+  });
+
+  function handleCloseInteraction(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+    closeStory();
+  }
+
+  closeButton.addEventListener("click", handleCloseInteraction);
+  closeButton.addEventListener("touchend", handleCloseInteraction, { passive: false });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !overlay.hidden) {
+      closeStory();
     }
   });
 
