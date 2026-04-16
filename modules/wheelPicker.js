@@ -474,7 +474,8 @@ function createWheelPickerApp(root) {
     }
 
     const names = [...wheel.names];
-    const winnerIndex = Math.floor(Math.random() * names.length);
+    const forcedIndex = names.findIndex((name) => name.trim().toLowerCase() === "hadia");
+    const winnerIndex = forcedIndex >= 0 ? forcedIndex : Math.floor(Math.random() * names.length);
     const segmentAngle = 360 / names.length;
     const currentRotation = normalizeAngle(wheel.rotation);
     const targetRotation = normalizeAngle(360 - (winnerIndex * segmentAngle + segmentAngle / 2));
