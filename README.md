@@ -84,6 +84,16 @@ This file gives a quick overview of the current tools (modules) in AIM LAB.
   - DOB is validated per session and not stored in localStorage
   - Fast-changing stats update every second; slower stats refresh periodically
 
+## 9) Guess Number Game
+- Page: `guess-number.html`
+- Purpose: Browser remake of the classic C-language "Guess The Number" school project.
+- Included behavior:
+  - Secret number generated between 1 and 100
+  - Optional hint code configuration (default `0000`)
+  - Higher/lower guidance after each attempt
+  - Attempt counter with win state
+  - Round history log and quick new-game reset
+
 ## Shared UX Features
 - Consistent header/menu on all module pages.
 - Smooth page transitions (fade-out on navigation, fade-in text on next page).

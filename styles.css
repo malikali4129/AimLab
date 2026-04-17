@@ -1919,6 +1919,93 @@ body.life-stats-overlay-open {
   gap: 12px;
 }
 
+.guess-minimal-card {
+  width: min(640px, 100%);
+  margin: 0 auto;
+  padding: clamp(18px, 3vw, 26px);
+  border-radius: 22px;
+  border: 1px solid rgba(95, 251, 255, 0.24);
+  background: linear-gradient(160deg, rgba(8, 12, 28, 0.9), rgba(8, 12, 20, 0.74));
+  box-shadow: inset 0 0 34px rgba(95, 251, 255, 0.06), 0 18px 38px rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 14px;
+}
+
+.guess-minimal-card.is-shaking {
+  animation: guessShake 360ms ease;
+}
+
+.guess-neon-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 3.4vw, 2rem);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #eaf7ff;
+}
+
+.guess-meta-row {
+  display: flex;
+  justify-content: center;
+}
+
+.guess-meta-row .time-pill {
+  min-width: 150px;
+}
+
+.guess-status-text {
+  margin: 0;
+  min-height: 26px;
+  text-align: center;
+  color: var(--cyan);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 180ms ease;
+}
+
+.guess-status-text.is-warn {
+  color: var(--warning);
+}
+
+.guess-status-text.is-win {
+  color: var(--green);
+}
+
+.guess-input-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.guess-input-row .cta-button {
+  min-width: 120px;
+}
+
+.guess-retry {
+  width: 100%;
+}
+
+body.guess-win-state {
+  background:
+    radial-gradient(circle at top left, rgba(80, 227, 164, 0.28), transparent 34%),
+    radial-gradient(circle at top right, rgba(95, 251, 255, 0.2), transparent 30%),
+    linear-gradient(145deg, #03160d 0%, #062b1a 44%, #04100b 100%);
+}
+
+body.guess-win-state .ambient-one {
+  background: rgba(80, 227, 164, 0.26);
+}
+
+body.guess-win-state .ambient-two {
+  background: rgba(95, 251, 255, 0.22);
+}
+
+body.guess-win-state .guess-minimal-card {
+  border-color: rgba(80, 227, 164, 0.55);
+  box-shadow: inset 0 0 36px rgba(80, 227, 164, 0.14), 0 18px 44px rgba(0, 0, 0, 0.36);
+}
+
 .password-meter-wrap {
   width: 100%;
   height: 12px;
@@ -2609,6 +2696,27 @@ body.life-stats-overlay-open {
   }
 }
 
+@keyframes guessShake {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 @keyframes modalSlideIn {
   from {
     opacity: 0;
@@ -3025,6 +3133,20 @@ body.life-stats-overlay-open {
 
   .password-actions {
     grid-template-columns: 1fr;
+  }
+
+  .guess-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .guess-meta-row .time-pill {
+    min-width: 100%;
+  }
+
+  .guess-status-text {
+    min-height: 44px;
+    display: grid;
+    align-items: center;
   }
 
   .gpa-columns {

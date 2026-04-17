@@ -9,6 +9,7 @@ const wheelModuleRoot = document.getElementById("wheel-module");
 const lifeProgressModuleRoot = document.getElementById("life-progress-module");
 const aboutModuleRoot = document.getElementById("about-module");
 const lifeStatsModuleRoot = document.getElementById("life-stats-module");
+const guessNumberModuleRoot = document.getElementById("guess-number-module");
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
 let revealItems = [];
@@ -69,6 +70,14 @@ const MODULE_REGISTRY = [
     homeTitle: "Wheel Picker",
     homeDescription: "Spin two name wheels and pick a winner"
   },
+  // {
+  //   href: "guess-number.html",
+  //   icon: "🎯",
+  //   shortTitle: "Guess",
+  //   menuTitle: "Guess Number",
+  //   homeTitle: "Guess Number Game",
+  //   homeDescription: "Play your classic school C game in web module style"
+  // },
   {
     href: "life-progress-tracker.html",
     icon: "⏳",
@@ -320,6 +329,9 @@ if (window.initAboutMe && aboutModuleRoot) {
 }
 if (window.initLifeStats && lifeStatsModuleRoot) {
   window.initLifeStats(lifeStatsModuleRoot);
+}
+if (window.initGuessNumberGame && guessNumberModuleRoot) {
+  window.initGuessNumberGame(guessNumberModuleRoot);
 }
 setupMobileMenu();
 setupPageSwitchTransitions();
