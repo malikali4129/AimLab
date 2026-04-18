@@ -1,7 +1,5 @@
 const IP_GEO_API_URL = "https://api.ipgeolocation.io/ipgeo";
 const IP_GEO_API_KEY = "c3813f2e823345888d6d03a9b83065e9";
-const KEYBOARD_AUDIO_PATH = "assets/audio/mind-reader/keyboard.mp3";
-const BGM_AUDIO_PATH = "assets/audio/mind-reader/oracle-bgm.mp3";
 
 function normalizeValue(value, fallback = "N/A") {
   if (value === null || value === undefined) {
@@ -70,8 +68,6 @@ function initMindReader(root) {
         <p class="oracle-entry-tip">PRESS ENTER TO BEGIN TRANSMISSION</p>
       </div>
       <div class="oracle-stage" id="oracle-stage" aria-live="polite" aria-atomic="false"></div>
-      <audio id="oracle-keyboard-audio" preload="auto" src="${KEYBOARD_AUDIO_PATH}"></audio>
-      <audio id="oracle-bgm-audio" preload="auto" loop src="${BGM_AUDIO_PATH}"></audio>
     </section>
   `;
 
@@ -81,53 +77,10 @@ function initMindReader(root) {
   const pauseButton = root.querySelector("#oracle-pause-btn");
   const enterLayer = root.querySelector("#oracle-entry");
   const enterButton = root.querySelector("#oracle-enter-btn");
-  const keyboardAudio = root.querySelector("#oracle-keyboard-audio");
-  const bgmAudio = root.querySelector("#oracle-bgm-audio");
 
   let activeRun = 0;
-  let allowSound = false;
   let started = false;
-  let typingAudioActive = false;
-  let typingInProgress = false;
   let isPaused = false;
-
-  function tryEnableSound() {
-    if (allowSound) return;
-    allowSound = true;
-
-    bgmAudio.volume = 0.35;
-    keyboardAudio.volume = 0.45;
-
-    bgmAudio.play().catch(() => {
-      // Browser blocked autoplay until user gesture.
-    });
-  }
-
-  async function preloadAudioElement(element, sourcePath) {
-    try {
-      const response = await fetch(sourcePath, { cache: "force-cache" });
-      if (!response.ok) {
-        element.load();
-        return;
-      }
-
-      const audioBlob = await response.blob();
-      const objectUrl = URL.createObjectURL(audioBlob);
-      element.src = objectUrl;
-      element.load();
-    } catch (error) {
-      element.load();
-    }
-  }
-
-  Promise.all([
-    preloadAudioElement(keyboardAudio, KEYBOARD_AUDIO_PATH),
-    preloadAudioElement(bgmAudio, BGM_AUDIO_PATH)
-  ]).catch(() => {
-    // Keep story start independent from preload failures.
-  });
-
-  window.addEventListener("pointerdown", tryEnableSound, { once: true });
 
   function flash() {
     flashLayer.classList.remove("is-active");
@@ -166,23 +119,6 @@ function initMindReader(root) {
     stage.appendChild(promptWrap);
   }
 
-  function startTypingAudio() {
-    if (!allowSound || typingAudioActive) return;
-    typingAudioActive = true;
-    keyboardAudio.loop = true;
-    keyboardAudio.currentTime = 0;
-    keyboardAudio.play().catch(() => {
-      // Ignore playback errors if browser audio is still locked.
-    });
-  }
-
-  function stopTypingAudio() {
-    if (!typingAudioActive) return;
-    typingAudioActive = false;
-    keyboardAudio.pause();
-    keyboardAudio.currentTime = 0;
-  }
-
   async function waitWhilePaused(runId) {
     while (isPaused && runId === activeRun) {
       await wait(90);
@@ -195,21 +131,6 @@ function initMindReader(root) {
     cinematic.classList.toggle("is-paused", isPaused);
     pauseButton.textContent = isPaused ? "RESUME" : "PAUSE";
     pauseButton.setAttribute("aria-pressed", isPaused ? "true" : "false");
-
-    if (isPaused) {
-      bgmAudio.pause();
-      stopTypingAudio();
-      return;
-    }
-
-    if (allowSound) {
-      bgmAudio.play().catch(() => {
-        // Ignore resume failures due to browser policy edge cases.
-      });
-      if (typingInProgress) {
-        startTypingAudio();
-      }
-    }
   }
 
   async function typeSceneLine({ text, className = "", speed = 56, hold = 2200, doFlash = false }, runId) {
@@ -220,20 +141,13 @@ function initMindReader(root) {
       flash();
     }
 
-    typingInProgress = true;
-    startTypingAudio();
-
     for (const char of text) {
       if (runId !== activeRun) {
-        typingInProgress = false;
-        stopTypingAudio();
         return;
       }
 
       await waitWhilePaused(runId);
       if (runId !== activeRun) {
-        typingInProgress = false;
-        stopTypingAudio();
         return;
       }
 
@@ -241,8 +155,6 @@ function initMindReader(root) {
       await wait(speed + Math.random() * 28);
     }
 
-    typingInProgress = false;
-    stopTypingAudio();
     cursor.remove();
 
     let held = 0;
@@ -261,7 +173,6 @@ function initMindReader(root) {
     activeRun += 1;
     const runId = activeRun;
 
-    tryEnableSound();
     cinematic.classList.remove("is-ending");
     cinematic.classList.add("is-ready");
 
@@ -304,7 +215,6 @@ function initMindReader(root) {
     }
 
     if (runId === activeRun) {
-      stopTypingAudio();
       cinematic.classList.add("is-ending");
       showHomePrompt();
     }
@@ -315,8 +225,6 @@ function initMindReader(root) {
     started = true;
     enterButton.disabled = true;
     enterLayer.setAttribute("aria-hidden", "true");
-
-    tryEnableSound();
     await playStory();
   }
 
