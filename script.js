@@ -11,6 +11,7 @@ const aboutModuleRoot = document.getElementById("about-module");
 const lifeStatsModuleRoot = document.getElementById("life-stats-module");
 const guessNumberModuleRoot = document.getElementById("guess-number-module");
 const mindReaderModuleRoot = document.getElementById("mind-reader-module");
+const moduleVersion = document.getElementById("module-version");
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
 let revealItems = [];
@@ -131,6 +132,28 @@ function initializePageTransitions() {
   revealItems.forEach((item, index) => {
     item.style.setProperty("--reveal-delay", `${220 + index * 90}ms`);
   });
+}
+
+async function loadModuleVersion() {
+  if (!moduleVersion) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`version.json?noCache=${Date.now()}`);
+    if (!response.ok) {
+      throw new Error(`Failed to load version.json: ${response.status}`);
+    }
+
+    const versionData = await response.json();
+    const version = versionData && typeof versionData.version === "string" ? versionData.version.trim() : "";
+    if (version) {
+      moduleVersion.textContent = version;
+      moduleVersion.setAttribute("aria-label", `Version ${version}`);
+    }
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function renderSharedNavigation() {
@@ -307,6 +330,7 @@ document.querySelectorAll(".chip, .ghost-button, .cta-button").forEach((element)
 renderSharedNavigation();
 renderHomeCards();
 initializePageTransitions();
+loadModuleVersion();
 
 createParticles();
 if (typedText) {
