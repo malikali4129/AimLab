@@ -319,6 +319,18 @@ function setupPageSwitchTransitions() {
       window.location.href = destination.href;
     }, 230);
   });
+
+  window.addEventListener("pageshow", (event) => {
+    isNavigating = false;
+    document.body.classList.remove("page-transition-out");
+
+    if (event.persisted) {
+      document.body.classList.add("page-transition-in");
+      window.setTimeout(() => {
+        document.body.classList.remove("page-transition-in");
+      }, 360);
+    }
+  });
 }
 
 document.querySelectorAll(".chip, .ghost-button, .cta-button").forEach((element) => {

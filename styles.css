@@ -341,11 +341,12 @@ input {
 
 .module-version {
   margin-left: 3px;
-  display: inline;
+  display: inline-block;
   font-size: 0.5em;
   font-weight: 400;
   vertical-align: baseline;
   line-height: 1;
+  white-space: nowrap;
   color: #c8ffff;
   letter-spacing: 0.03em;
   text-shadow: 0 0 1px rgba(255, 255, 255, 0.95), 0 0 4px rgba(95, 251, 255, 0.9), 0 0 8px rgba(95, 251, 255, 0.55);
@@ -648,6 +649,15 @@ body.page-transition-out .app-shell {
 body.page-transition-out .ambient,
 body.page-transition-out .particles {
   opacity: 0;
+}
+
+body.page-transition-in .app-shell {
+  animation: pageReturnIn 360ms ease both;
+}
+
+body.page-transition-in .ambient,
+body.page-transition-in .particles {
+  animation: pageReturnFadeIn 300ms ease both;
 }
 
 .page {
@@ -2965,6 +2975,30 @@ body.ip-horror-mode .ip-horror-shell .cta-button:hover {
   }
 }
 
+@keyframes pageReturnIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes pageReturnFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
 @keyframes textComeIn {
   from {
     opacity: 0;
@@ -3277,6 +3311,12 @@ body.ip-horror-mode .ip-horror-shell .cta-button:hover {
 
   .module-title {
     font-size: 0.9rem;
+  }
+
+  .module-version {
+    margin-left: 2px;
+    font-size: 0.44em;
+    letter-spacing: 0.02em;
   }
 
   .menu-btn {
