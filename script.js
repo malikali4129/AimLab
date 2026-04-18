@@ -102,15 +102,15 @@ const MODULE_REGISTRY = [
     menuTitle: "Mind Reader",
     homeTitle: "Mind Reader",
     homeDescription: "Cinematic oracle story with live geolocation reveal"
+  },
+  {
+    href: "about.html",
+    icon: "👤",
+    shortTitle: "About",
+    menuTitle: "About Me",
+    homeTitle: "About Me",
+    homeDescription: "Sample bio section with a functional contact form"
   }
-  // {
-  //   href: "about.html",
-  //   icon: "👤",
-  //   shortTitle: "About",
-  //   menuTitle: "About Me",
-  //   homeTitle: "About Me",
-  //   homeDescription: "Sample bio section with a functional contact form"
-  // }
 ];
 
 const typingLines = [
