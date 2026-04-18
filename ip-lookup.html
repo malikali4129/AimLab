@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Oracle Session</title>
+  <meta name="description" content="Full-screen retro cinematic oracle experience with dramatic story text and geolocation reveal." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #020503;
+      --green: #89ff89;
+      --green-soft: #43d043;
+      --scan: rgba(137, 255, 137, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--green);
+      font-family: "VT323", monospace;
+    }
+
+    body {
+      position: relative;
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    body::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 10% 12%, rgba(25, 120, 25, 0.22), transparent 35%),
+        radial-gradient(circle at 84% 75%, rgba(20, 95, 20, 0.2), transparent 36%),
+        linear-gradient(180deg, rgba(2, 10, 2, 0.94), rgba(1, 4, 1, 0.98));
+      z-index: -4;
+    }
+
+    body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: -2;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 2px,
+        rgba(150, 255, 150, 0.028) 3px,
+        transparent 4px
+      );
+      animation: crtRollUp 7s linear infinite;
+      opacity: 0.85;
+    }
+
+    #ip-lookup-module {
+      width: min(1200px, 100vw);
+      height: 100vh;
+    }
+
+    .oracle-cinematic {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: clamp(24px, 5vw, 68px);
+      display: grid;
+      align-content: center;
+      gap: clamp(18px, 2.6vh, 28px);
+      overflow: hidden;
+      background: radial-gradient(circle at center, rgba(25, 90, 25, 0.05), rgba(1, 4, 1, 0.2) 60%, rgba(0, 0, 0, 0.74));
+      text-shadow: 0 0 10px rgba(137, 255, 137, 0.16);
+    }
+
+    .oracle-cinematic.is-ending .oracle-line {
+      color: #b2ffb2;
+    }
+
+    .oracle-noise {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.13;
+      z-index: 1;
+      mix-blend-mode: screen;
+      background-image:
+        radial-gradient(rgba(182, 255, 182, 0.38) 0.5px, transparent 0.6px),
+        linear-gradient(180deg, transparent, rgba(140, 255, 140, 0.05) 45%, transparent 100%);
+      background-size: 3px 3px, 100% 100%;
+      animation: noiseJump 0.14s steps(2) infinite;
+    }
+
+    .oracle-scanlines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      opacity: 0.34;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 3px,
+          rgba(130, 255, 130, 0.08) 4px,
+          transparent 5px
+        );
+      animation: scanlineRise 2.8s linear infinite;
+    }
+
+    .oracle-flash {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 3;
+      background: rgba(170, 255, 170, 0.24);
+      opacity: 0;
+    }
+
+    .oracle-flash.is-active {
+      animation: flashPulse 240ms ease;
+    }
+
+    .oracle-stage {
+      position: relative;
+      z-index: 5;
+      display: grid;
+      gap: clamp(12px, 1.8vh, 18px);
+      align-content: center;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 360ms ease, transform 360ms ease;
+    }
+
+    .oracle-cinematic.is-ready .oracle-stage {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .oracle-entry {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      display: grid;
+      place-content: center;
+      gap: 18px;
+      justify-items: center;
+      background: radial-gradient(circle at center, rgba(14, 38, 14, 0.2), rgba(0, 0, 0, 0.58));
+      transition: opacity 320ms ease, transform 320ms ease;
+    }
+
+    .oracle-cinematic.is-ready .oracle-entry {
+      opacity: 0;
+      transform: scale(1.02);
+      pointer-events: none;
+    }
+
+    .oracle-enter-btn {
+      position: relative;
+      min-width: min(560px, 86vw);
+      min-height: clamp(84px, 15vw, 138px);
+      padding: 0 24px;
+      border-radius: 18px;
+      border: 2px solid rgba(133, 255, 133, 0.7);
+      color: #c9ffc9;
+      background: linear-gradient(135deg, rgba(14, 38, 14, 0.84), rgba(4, 18, 4, 0.96));
+      font-family: "VT323", monospace;
+      font-size: clamp(2.4rem, 8vw, 5.8rem);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+      text-shadow: 0 0 16px rgba(116, 255, 116, 0.5);
+      box-shadow: inset 0 0 24px rgba(87, 220, 87, 0.2), 0 0 35px rgba(83, 255, 83, 0.16);
+      transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
+    }
+
+    .oracle-enter-btn:hover,
+    .oracle-enter-btn:focus-visible {
+      border-color: rgba(162, 255, 162, 0.95);
+      box-shadow: inset 0 0 34px rgba(95, 255, 95, 0.27), 0 0 46px rgba(92, 255, 92, 0.27);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .oracle-enter-btn:active {
+      transform: translateY(1px) scale(0.995);
+    }
+
+    .oracle-enter-btn::before,
+    .oracle-enter-btn::after {
+      content: attr(data-text);
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      pointer-events: none;
+      opacity: 0.75;
+    }
+
+    .oracle-enter-btn::before {
+      color: rgba(110, 255, 110, 0.7);
+      transform: translate(2px, -1px);
+      animation: enterGlitchA 1.9s infinite steps(2, end);
+    }
+
+    .oracle-enter-btn::after {
+      color: rgba(193, 255, 193, 0.65);
+      transform: translate(-2px, 1px);
+      animation: enterGlitchB 2.2s infinite steps(2, end);
+    }
+
+    .oracle-entry-tip {
+      margin: 0;
+      color: #a9fba9;
+      font-size: clamp(1.2rem, 2.7vw, 1.9rem);
+      letter-spacing: 0.09em;
+      text-align: center;
+    }
+
+    .oracle-pause-btn {
+      position: absolute;
+      top: clamp(12px, 2.1vh, 20px);
+      right: clamp(12px, 2vw, 22px);
+      z-index: 7;
+      min-height: 42px;
+      min-width: 112px;
+      padding: 0 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(132, 255, 132, 0.52);
+      background: rgba(8, 26, 8, 0.58);
+      color: #cbffcb;
+      font-family: "VT323", monospace;
+      font-size: clamp(1.05rem, 2.1vw, 1.5rem);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: inset 0 0 10px rgba(95, 255, 95, 0.12);
+      transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+    }
+
+    .oracle-pause-btn:hover,
+    .oracle-pause-btn:focus-visible {
+      border-color: rgba(170, 255, 170, 0.9);
+      box-shadow: inset 0 0 15px rgba(95, 255, 95, 0.22), 0 0 20px rgba(88, 255, 88, 0.16);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .oracle-pause-btn:active {
+      transform: translateY(0);
+    }
+
+    .oracle-cinematic.is-paused .oracle-line {
+      filter: drop-shadow(0 0 10px rgba(130, 255, 130, 0.3));
+    }
+
+    .oracle-line {
+      margin: 0;
+      opacity: 0;
+      transform: translateY(12px);
+      font-size: clamp(1.7rem, 4.9vw, 4.4rem);
+      letter-spacing: 0.03em;
+      line-height: 1.1;
+      color: var(--green);
+      min-height: 1.15em;
+      filter: drop-shadow(0 0 7px rgba(90, 255, 90, 0.18));
+    }
+
+    .oracle-line.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .oracle-line.is-quiet {
+      color: #9def9d;
+      font-size: clamp(1.45rem, 3.3vw, 2.8rem);
+    }
+
+    .oracle-line.is-reveal {
+      color: #c9ffc9;
+      font-size: clamp(2rem, 5.4vw, 4.9rem);
+      letter-spacing: 0.045em;
+    }
+
+    .oracle-line.is-location {
+      color: #d5ffd5;
+      font-size: clamp(2.1rem, 5.9vw, 5.6rem);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .oracle-line.is-end {
+      color: #74e774;
+      font-size: clamp(1.4rem, 3vw, 2.4rem);
+      letter-spacing: 0.1em;
+    }
+
+    .oracle-home-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: clamp(14px, 2.4vh, 22px);
+      padding: 10px 18px;
+      border: 1px solid rgba(132, 255, 132, 0.55);
+      border-radius: 10px;
+      color: #cbffcb;
+      text-decoration: none;
+      font-size: clamp(1.2rem, 2.8vw, 2rem);
+      letter-spacing: 0.09em;
+      background: rgba(15, 50, 15, 0.25);
+      box-shadow: inset 0 0 14px rgba(95, 255, 95, 0.14), 0 0 20px rgba(89, 255, 89, 0.1);
+      text-transform: uppercase;
+      transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+    }
+
+    .oracle-home-link:hover,
+    .oracle-home-link:focus-visible {
+      border-color: rgba(172, 255, 172, 0.92);
+      box-shadow: inset 0 0 18px rgba(95, 255, 95, 0.2), 0 0 28px rgba(89, 255, 89, 0.2);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .oracle-cursor {
+      display: inline-block;
+      width: 0.55em;
+      margin-left: 0.2em;
+      border-bottom: 0.13em solid var(--green-soft);
+      animation: cursorBlink 0.9s steps(1) infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes cursorBlink {
+      50% { opacity: 0; }
+    }
+
+    @keyframes flashPulse {
+      0% { opacity: 0; }
+      25% { opacity: 0.4; }
+      100% { opacity: 0; }
+    }
+
+    @keyframes noiseJump {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(-2px, 2px); }
+    }
+
+    @keyframes crtRollUp {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-7px); }
+    }
+
+    @keyframes scanlineRise {
+      0% { transform: translateY(12px); }
+      100% { transform: translateY(-14px); }
+    }
+
+    @keyframes enterGlitchA {
+      0%, 88%, 100% { clip-path: inset(0 0 0 0); }
+      89% { clip-path: inset(0 0 78% 0); }
+      92% { clip-path: inset(30% 0 22% 0);

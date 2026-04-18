@@ -2234,6 +2234,186 @@ body.guess-win-state .guess-minimal-card {
   font-weight: 600;
 }
 
+body.ip-horror-mode {
+  background:
+    radial-gradient(circle at 16% 18%, rgba(130, 10, 10, 0.34), transparent 32%),
+    radial-gradient(circle at 82% 76%, rgba(108, 0, 0, 0.3), transparent 36%),
+    linear-gradient(145deg, #070304 0%, #100506 45%, #030102 100%);
+}
+
+body.ip-horror-mode .ambient-one {
+  background: rgba(140, 8, 18, 0.35);
+}
+
+body.ip-horror-mode .ambient-two {
+  background: rgba(90, 10, 22, 0.28);
+}
+
+.ip-horror-shell {
+  gap: 16px;
+  padding: clamp(18px, 3vw, 24px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 80, 96, 0.3);
+  background: linear-gradient(150deg, rgba(20, 5, 9, 0.9), rgba(7, 1, 3, 0.94));
+  box-shadow: inset 0 0 0 1px rgba(255, 95, 110, 0.08), 0 22px 44px rgba(0, 0, 0, 0.48);
+}
+
+.ip-horror-title {
+  margin: 0;
+  text-align: center;
+  font-size: clamp(1.3rem, 3.4vw, 1.9rem);
+  letter-spacing: 0.08em;
+  color: #ffdce2;
+  text-shadow: 0 0 20px rgba(255, 70, 90, 0.25);
+}
+
+.ip-horror-title::before {
+  color: rgba(255, 76, 95, 0.7);
+}
+
+.ip-horror-title::after {
+  color: rgba(142, 34, 45, 0.75);
+}
+
+.ip-horror-subtitle {
+  margin: -4px 0 2px;
+  min-height: 28px;
+  text-align: center;
+  color: #ffc7cd;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  animation: horrorBlink 2.1s steps(1) infinite;
+}
+
+.ip-progress-track {
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 96, 112, 0.15);
+  border: 1px solid rgba(255, 96, 112, 0.3);
+  overflow: hidden;
+}
+
+.ip-progress-fill {
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255, 86, 104, 0.92), rgba(255, 164, 176, 0.86));
+  box-shadow: 0 0 20px rgba(255, 80, 96, 0.45);
+  transition: width 420ms ease;
+}
+
+.ip-story-box {
+  max-height: 56vh;
+  overflow: auto;
+  gap: 10px;
+  padding: 12px;
+}
+
+.ip-story-line {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 122, 136, 0.2);
+  background: rgba(255, 95, 118, 0.05);
+  color: #ffe6e9;
+  font-family: "Courier New", monospace;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.ip-story-prefix {
+  display: inline-block;
+  min-width: 74px;
+  margin-right: 8px;
+  color: #ffb4bf;
+  font-weight: 700;
+}
+
+.ip-story-line.is-system .ip-story-prefix {
+  color: #ffb7c1;
+}
+
+.ip-story-line.is-narrator .ip-story-prefix,
+.ip-story-line.is-oracle .ip-story-prefix {
+  color: #ffd6dc;
+}
+
+.ip-story-line.is-reveal {
+  border-color: rgba(255, 156, 166, 0.36);
+  background: rgba(255, 108, 129, 0.1);
+}
+
+.ip-story-line.is-reveal .ip-story-prefix {
+  color: #ffcbd3;
+}
+
+.ip-story-line.is-warning {
+  border-color: rgba(255, 209, 102, 0.5);
+  background: rgba(255, 209, 102, 0.08);
+}
+
+.ip-story-line.is-warning .ip-story-prefix {
+  color: #ffd166;
+}
+
+.ip-story-line.is-truth {
+  border-color: rgba(116, 247, 179, 0.4);
+  background: rgba(116, 247, 179, 0.08);
+}
+
+.ip-story-line.is-truth .ip-story-prefix {
+  color: #9cfbcf;
+}
+
+.ip-story-line.is-summary {
+  border-color: rgba(255, 141, 154, 0.45);
+  background: rgba(255, 95, 118, 0.12);
+}
+
+.ip-story-actions {
+  grid-template-columns: 1fr;
+}
+
+body.ip-horror-mode .ip-horror-shell .download-label {
+  color: #f0a8b0;
+}
+
+body.ip-horror-mode .ip-horror-shell .download-input,
+body.ip-horror-mode .ip-horror-shell .download-select {
+  border-color: rgba(255, 85, 103, 0.35);
+  background: rgba(17, 3, 7, 0.84);
+}
+
+body.ip-horror-mode .ip-horror-shell .download-input:focus,
+body.ip-horror-mode .ip-horror-shell .download-select:focus {
+  border-color: rgba(255, 126, 139, 0.62);
+  box-shadow: 0 0 0 4px rgba(255, 68, 90, 0.13);
+}
+
+body.ip-horror-mode .ip-horror-shell .download-result {
+  background: rgba(18, 4, 8, 0.88);
+  border-color: rgba(255, 88, 106, 0.28);
+  color: #ffd7dd;
+}
+
+body.ip-horror-mode .ip-horror-shell .speed-row {
+  border-color: rgba(255, 122, 136, 0.24);
+  background: rgba(255, 95, 118, 0.06);
+}
+
+body.ip-horror-mode .ip-horror-shell .ghost-button,
+body.ip-horror-mode .ip-horror-shell .cta-button {
+  border-color: rgba(255, 95, 110, 0.24);
+  background: rgba(255, 80, 96, 0.08);
+}
+
+body.ip-horror-mode .ip-horror-shell .ghost-button:hover,
+body.ip-horror-mode .ip-horror-shell .cta-button:hover {
+  background: rgba(255, 95, 110, 0.17);
+  border-color: rgba(255, 126, 139, 0.4);
+}
+
 .birthday-page-min {
   min-height: 100%;
   display: flex;
@@ -2736,6 +2916,20 @@ body.guess-win-state .guess-minimal-card {
   100% { transform: translateY(0); opacity: 0.3; }
 }
 
+@keyframes horrorBlink {
+  0%, 89%, 100% {
+    opacity: 1;
+    text-shadow: 0 0 12px rgba(255, 70, 90, 0.25);
+  }
+  90%, 93% {
+    opacity: 0.35;
+    text-shadow: none;
+  }
+  94%, 96% {
+    opacity: 0.8;
+  }
+}
+
 @keyframes trackerSheen {
   from {
     transform: translateX(-130%);
@@ -3129,6 +3323,16 @@ body.guess-win-state .guess-minimal-card {
 
   .download-actions {
     grid-template-columns: 1fr;
+  }
+
+  .ip-story-box {
+    max-height: 50vh;
+    padding: 10px;
+  }
+
+  .ip-story-prefix {
+    min-width: 64px;
+    margin-right: 6px;
   }
 
   .password-actions {

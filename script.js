@@ -10,6 +10,7 @@ const lifeProgressModuleRoot = document.getElementById("life-progress-module");
 const aboutModuleRoot = document.getElementById("about-module");
 const lifeStatsModuleRoot = document.getElementById("life-stats-module");
 const guessNumberModuleRoot = document.getElementById("guess-number-module");
+const ipLookupModuleRoot = document.getElementById("ip-lookup-module");
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
 let revealItems = [];
@@ -93,6 +94,14 @@ const MODULE_REGISTRY = [
     menuTitle: "Life Stats",
     homeTitle: "Life Stats",
     homeDescription: "Scroll through live stats calculated from your birth date"
+  },
+  {
+    href: "ip-lookup.html",
+    icon: "🌐",
+    shortTitle: "IP Lookup",
+    menuTitle: "IP Lookup",
+    homeTitle: "IP Geolocation Lookup",
+    homeDescription: "Fetch IP location, ISP, timezone, and network details"
   },
   {
     href: "about.html",
@@ -332,6 +341,9 @@ if (window.initLifeStats && lifeStatsModuleRoot) {
 }
 if (window.initGuessNumberGame && guessNumberModuleRoot) {
   window.initGuessNumberGame(guessNumberModuleRoot);
+}
+if (window.initIpLookup && ipLookupModuleRoot) {
+  window.initIpLookup(ipLookupModuleRoot);
 }
 setupMobileMenu();
 setupPageSwitchTransitions();
