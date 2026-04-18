@@ -193,6 +193,13 @@ function renderHomeCards() {
 
 function finishPageTransitions() {
   document.body.classList.add("page-ready");
+  document.body.classList.remove("page-transition-out");
+  document.body.classList.remove("is-loading");
+}
+
+function restorePageState() {
+  isNavigating = false;
+  finishPageTransitions();
 }
 
 function updateTyping() {
@@ -371,6 +378,12 @@ if (window.initMindReader && mindReaderModuleRoot) {
 }
 setupMobileMenu();
 setupPageSwitchTransitions();
+
+window.addEventListener("pageshow", (event) => {
+  if (event.persisted) {
+    restorePageState();
+  }
+});
 
 requestAnimationFrame(() => {
   setTimeout(finishPageTransitions, 80);
