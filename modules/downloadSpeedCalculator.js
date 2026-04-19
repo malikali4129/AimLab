@@ -86,34 +86,28 @@ function buildResultMarkup(result) {
     : `${formatNumber(result.speedValue)} ${result.speedUnit}/${result.speedInterval}`;
 
   return `
-    <div class="speed-row"><strong>Mode:</strong> ${escapeHtml(modeLabel)}</div>
-    <div class="speed-row"><strong>File size:</strong> ${formatNumber(result.fileSizeValue)} ${escapeHtml(result.fileSizeUnit)}</div>
-    <div class="speed-row"><strong>Speed:</strong> ${escapeHtml(speedLine)}</div>
-    <div class="speed-row"><strong>Equivalent:</strong> ${formatNumber(result.metrics.bitsPerSecond)} bit/sec</div>
-    <div class="speed-row"><strong>Total time:</strong> ${result.metrics.clock.hrs}h ${result.metrics.clock.mins}m ${result.metrics.clock.secs}s (${formatNumber(result.metrics.totalSeconds, 2)} sec)</div>
-    <div class="speed-row"><strong>Source:</strong> ${escapeHtml(result.sourceLabel)}</div>
-    ${result.mode === "auto" && result.testSeconds > 0 ? `<div class="speed-row"><strong>Test payload:</strong> ${formatNumber(result.testBytes / (1024 ** 2), 2)} MB in ${formatNumber(result.testSeconds, 2)} sec</div>` : ""}
-    ${result.mode === "auto" && result.testSeconds <= 0 ? `<div class="speed-row"><strong>Test payload:</strong> Browser connection estimate used</div>` : ""}
-    <div class="speed-row"><strong>Total data:</strong> ${formatNumber(result.metrics.fileSizeBytes / (1024 ** 2), 2)} MB</div>
+    <details class="download-result-details">
+      <summary>Details</summary>
+      <div class="download-result-details-body">
+        <div class="speed-row"><strong>Mode:</strong> ${escapeHtml(modeLabel)}</div>
+        <div class="speed-row"><strong>File size:</strong> ${formatNumber(result.fileSizeValue)} ${escapeHtml(result.fileSizeUnit)}</div>
+        <div class="speed-row"><strong>Speed:</strong> ${escapeHtml(speedLine)}</div>
+        <div class="speed-row"><strong>Equivalent:</strong> ${formatNumber(result.metrics.bitsPerSecond)} bit/sec</div>
+        <div class="speed-row"><strong>Total time:</strong> ${result.metrics.clock.hrs}h ${result.metrics.clock.mins}m ${result.metrics.clock.secs}s (${formatNumber(result.metrics.totalSeconds, 2)} sec)</div>
+        <div class="speed-row"><strong>Source:</strong> ${escapeHtml(result.sourceLabel)}</div>
+        ${result.mode === "auto" && result.testSeconds > 0 ? `<div class="speed-row"><strong>Test payload:</strong> ${formatNumber(result.testBytes / (1024 ** 2), 2)} MB in ${formatNumber(result.testSeconds, 2)} sec</div>` : ""}
+        ${result.mode === "auto" && result.testSeconds <= 0 ? `<div class="speed-row"><strong>Test payload:</strong> Browser connection estimate used</div>` : ""}
+        <div class="speed-row"><strong>Total data:</strong> ${formatNumber(result.metrics.fileSizeBytes / (1024 ** 2), 2)} MB</div>
+      </div>
+    </details>
   `;
 }
 
 function buildFileStepMarkup(state) {
-  const modeLabel = formatModeLabel(state.mode);
-  const helpText = state.mode === "auto"
-    ? "Auto mode starts the live speed test after you confirm the file size."
-    : "Manual mode continues to the speed entry step after this screen.";
-
   return `
     <div class="download-step-card">
-      <div class="download-step-copy">
-        <p class="download-step-eyebrow">${escapeHtml(modeLabel)}</p>
-        <h4>Step 1: file size</h4>
-        <p>${escapeHtml(helpText)}</p>
-      </div>
       <form class="download-flow-form" data-flow-form>
         <div class="download-calc-block">
-          <label class="download-label" for="download-flow-file-size">File size</label>
           <div class="download-row-control">
             <input
               id="download-flow-file-size"
@@ -122,18 +116,19 @@ function buildFileStepMarkup(state) {
               min="0"
               step="0.01"
               placeholder="Enter file size"
+              aria-label="File size"
               inputmode="decimal"
               value="${escapeHtml(state.fileSizeValue)}"
               data-flow-file-size
             />
-            <select id="download-flow-file-size-unit" class="download-select compact" data-flow-file-size-unit>
+            <select id="download-flow-file-size-unit" class="download-select compact" aria-label="File size unit" data-flow-file-size-unit>
               ${renderOptions(FILE_SIZE_OPTIONS, state.fileSizeUnit)}
             </select>
           </div>
         </div>
         <div class="download-flow-actions">
           <button type="button" class="ghost-button" data-flow-action="close">Cancel</button>
-          <button type="submit" class="cta-button">${state.mode === "auto" ? "Run speed test" : "Continue"}</button>
+          <button type="submit" class="cta-button download-next-button">${state.mode === "auto" ? "Run speed test" : "Continue"}</button>
         </div>
       </form>
     </div>
@@ -143,20 +138,8 @@ function buildFileStepMarkup(state) {
 function buildSpeedStepMarkup(state) {
   return `
     <div class="download-step-card">
-      <div class="download-step-copy">
-        <p class="download-step-eyebrow">Manual mode</p>
-        <h4>Step 2: download speed</h4>
-        <p>Enter the network speed you want to check against the selected file size.</p>
-      </div>
       <form class="download-flow-form" data-flow-form>
         <div class="download-calc-block">
-          <label class="download-label">File size locked in</label>
-          <div class="download-result is-compact">
-            <div class="speed-row"><strong>File size:</strong> ${formatNumber(state.fileSizeValue)} ${escapeHtml(state.fileSizeUnit)}</div>
-          </div>
-        </div>
-        <div class="download-calc-block">
-          <label class="download-label" for="download-flow-speed">Download speed</label>
           <div class="download-row-control speed-row-control">
             <input
               id="download-flow-speed"
@@ -165,22 +148,23 @@ function buildSpeedStepMarkup(state) {
               min="0"
               step="0.01"
               placeholder="Enter speed"
+              aria-label="Download speed"
               inputmode="decimal"
               value="${escapeHtml(state.speedValue)}"
               data-flow-speed
             />
-            <select id="download-flow-speed-unit" class="download-select compact" data-flow-speed-unit>
+            <select id="download-flow-speed-unit" class="download-select compact" aria-label="Download speed unit" data-flow-speed-unit>
               ${renderOptions(SPEED_UNIT_OPTIONS, state.speedUnit)}
             </select>
             <span class="divider">/</span>
-            <select id="download-flow-speed-interval" class="download-select compact" data-flow-speed-interval>
+            <select id="download-flow-speed-interval" class="download-select compact" aria-label="Speed interval" data-flow-speed-interval>
               ${renderOptions(SPEED_INTERVAL_OPTIONS, state.speedInterval)}
             </select>
           </div>
         </div>
         <div class="download-flow-actions">
           <button type="button" class="ghost-button" data-flow-action="back">Back</button>
-          <button type="submit" class="cta-button">Show result</button>
+          <button type="submit" class="cta-button download-next-button">Show result</button>
         </div>
       </form>
     </div>
@@ -188,22 +172,15 @@ function buildSpeedStepMarkup(state) {
 }
 
 function buildMeasureStepMarkup(state) {
-  const progressText = state.measurementMessage || "Preparing the live speed test...";
-  const statusText = state.measurementStatus || "Keep this popup open while the download is measured.";
+  const progressText = state.measurementMessage || "Testing speed...";
 
   return `
     <div class="download-step-card">
-      <div class="download-step-copy">
-        <p class="download-step-eyebrow">Auto mode</p>
-        <h4>Step 2: live speed test</h4>
-        <p>${escapeHtml(statusText)}</p>
-      </div>
       <div class="download-progress-shell">
         <div class="download-progress-track" aria-hidden="true">
           <span class="download-progress-fill" style="width: ${Math.max(8, Math.min(100, state.measurementProgress || 8))}%" data-flow-progress-fill></span>
         </div>
         <div class="download-flow-progress-text" data-flow-progress-text>${escapeHtml(progressText)}</div>
-        <div class="download-flow-status${state.measurementTone === "warn" ? " is-warn" : ""}" data-flow-status>${escapeHtml(statusText)}</div>
       </div>
       <div class="download-flow-actions">
         <button type="button" class="ghost-button" data-flow-action="back" ${state.isMeasuring ? "disabled" : ""}>Back</button>
@@ -218,10 +195,9 @@ function buildResultStepMarkup(state) {
   if (!result) {
     return `
       <div class="download-step-card">
-        <div class="download-step-copy">
-          <p class="download-step-eyebrow">${escapeHtml(formatModeLabel(state.mode))}</p>
-          <h4>No result yet</h4>
-          <p>Something interrupted the flow before the calculation finished.</p>
+        <div class="download-result-focus" id="download-time-grid">
+          <strong>No result available</strong>
+          <span>Try again</span>
         </div>
         <div class="download-flow-actions">
           <button type="button" class="ghost-button" data-flow-action="restart">Restart</button>
@@ -231,37 +207,13 @@ function buildResultStepMarkup(state) {
     `;
   }
 
-  const resultActions = result.mode === "manual"
-    ? `
-      <button type="button" class="ghost-button" data-flow-action="edit-file">Edit file size</button>
-      <button type="button" class="ghost-button" data-flow-action="edit-speed">Edit speed</button>
-      <button type="button" class="ghost-button" data-flow-action="restart">Restart</button>
-      <button type="button" class="cta-button" data-flow-action="share">Share result</button>
-    `
-    : `
-      <button type="button" class="ghost-button" data-flow-action="edit-file">Edit file size</button>
-      <button type="button" class="ghost-button" data-flow-action="restart">Restart</button>
-      <button type="button" class="cta-button" data-flow-action="share">Share result</button>
-    `;
-
   return `
     <div class="download-step-card">
-      <div class="download-step-copy">
-        <p class="download-step-eyebrow">${escapeHtml(formatModeLabel(result.mode))}</p>
-        <h4>Results</h4>
-        <p>${result.mode === "auto" ? "The popup measured your connection and calculated the download time." : "The popup used your entered speed to calculate the download time."}</p>
-      </div>
-      <div class="download-time-grid" id="download-time-grid">
-        <div class="time-pill"><strong>${result.metrics.clock.hrs}</strong><span>hrs</span></div>
-        <div class="time-pill"><strong>${result.metrics.clock.mins}</strong><span>min</span></div>
-        <div class="time-pill"><strong>${result.metrics.clock.secs}</strong><span>sec</span></div>
+      <div class="download-result-focus" id="download-time-grid">
+        <strong>Download will complete in ${result.metrics.clock.hrs}h ${result.metrics.clock.mins}m ${result.metrics.clock.secs}s</strong>
       </div>
       <div class="download-result" id="speed-result" aria-live="polite">
         ${buildResultMarkup(result)}
-      </div>
-      <div class="download-flow-actions download-flow-actions--results">
-        ${resultActions}
-        <button type="button" class="cta-button is-secondary" data-flow-action="close">Close</button>
       </div>
     </div>
   `;
@@ -292,9 +244,9 @@ function initDownloadSpeedCalculator(root) {
       <div class="download-flow-backdrop" data-flow-close></div>
       <div class="download-flow-dialog" role="dialog" aria-modal="true" aria-labelledby="download-flow-title">
         <button type="button" class="download-flow-close" data-flow-close aria-label="Close download popup">×</button>
-        <p class="download-flow-kicker" data-flow-kicker>Manual mode</p>
-        <h3 class="download-flow-title" id="download-flow-title" data-flow-title>Guided download test</h3>
-        <p class="download-flow-note" data-flow-note>Choose a step and keep moving through the popup.</p>
+        <p class="download-flow-kicker" data-flow-kicker></p>
+        <h3 class="download-flow-title" id="download-flow-title" data-flow-title></h3>
+        <p class="download-flow-note" data-flow-note></p>
         <div class="download-flow-body" data-flow-body></div>
       </div>
     </div>
@@ -332,38 +284,20 @@ function initDownloadSpeedCalculator(root) {
   }
 
   function setHeaderText() {
-    modalKicker.textContent = formatModeLabel(state.mode);
-
-    if (state.step === "file") {
-      modalTitle.textContent = state.mode === "auto" ? "Enter the file size" : "Start with the file size";
-      modalNote.textContent = state.mode === "auto"
-        ? "The popup will run a speed test after this step."
-        : "You will enter speed on the next screen.";
-      return;
+    if (modalKicker) {
+      modalKicker.textContent = "";
+      modalKicker.hidden = true;
     }
 
-    if (state.step === "speed") {
-      modalTitle.textContent = "Enter the download speed";
-      modalNote.textContent = "This is the manual mode only step where the connection value is entered directly.";
-      return;
+    if (modalTitle) {
+      modalTitle.textContent = "";
+      modalTitle.hidden = true;
     }
 
-    if (state.step === "measure") {
-      modalTitle.textContent = "Running speed test";
-      modalNote.textContent = state.isMeasuring
-        ? "A live fetch is measuring your download speed now."
-        : "The popup is ready to rerun the test or go back.";
-      return;
+    if (modalNote) {
+      modalNote.textContent = "";
+      modalNote.hidden = true;
     }
-
-    if (state.step === "result") {
-      modalTitle.textContent = "Download result";
-      modalNote.textContent = "Review the numbers, share them, or restart the flow.";
-      return;
-    }
-
-    modalTitle.textContent = "Guided download test";
-    modalNote.textContent = "Choose a mode to begin.";
   }
 
   function renderFlow() {

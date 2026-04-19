@@ -684,6 +684,7 @@ input {
 
 .chip,
 .ghost-button,
+.cta-button,
 .back-link,
 .choice-button,
 .captcha-tile {
@@ -2024,11 +2025,11 @@ body.life-stats-overlay-open {
 .download-result {
   display: grid;
   gap: 8px;
-  margin-top: 2px;
-  border-radius: 18px;
-  padding: 14px;
-  background: rgba(9, 12, 27, 0.9);
-  border: 1px solid rgba(95, 251, 255, 0.14);
+  margin-top: 0;
+  border-radius: 14px;
+  padding: 10px 12px;
+  background: rgba(9, 12, 27, 0.7);
+  border: 1px solid rgba(95, 251, 255, 0.1);
   color: #dfe5ff;
 }
 
@@ -2036,6 +2037,31 @@ body.life-stats-overlay-open {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.download-result-focus {
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  border-radius: 16px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(95, 251, 255, 0.18);
+}
+
+.download-result-focus strong {
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(1rem, 2.2vw, 1.25rem);
+  letter-spacing: 0.03em;
+  color: #e9f8ff;
+  text-align: center;
+}
+
+.download-result-focus span {
+  color: var(--muted);
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 .time-pill {
@@ -2564,13 +2590,14 @@ body.guess-win-state .guess-minimal-card {
   visibility: hidden;
   pointer-events: none;
   isolation: isolate;
-  transition: opacity 260ms ease, visibility 260ms ease;
+  transition: opacity 320ms cubic-bezier(0.2, 0.85, 0.3, 1), visibility 0s linear 320ms;
 }
 
 .download-flow-modal.is-open {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
+  transition: opacity 320ms cubic-bezier(0.2, 0.85, 0.3, 1), visibility 0s linear 0s;
 }
 
 .download-flow-backdrop {
@@ -2578,6 +2605,14 @@ body.guess-win-state .guess-minimal-card {
   inset: 0;
   z-index: 1;
   background: rgba(0, 0, 0, 0.62);
+  opacity: 0;
+  backdrop-filter: blur(0);
+  -webkit-backdrop-filter: blur(0);
+  transition: opacity 320ms cubic-bezier(0.2, 0.85, 0.3, 1), backdrop-filter 320ms cubic-bezier(0.2, 0.85, 0.3, 1), -webkit-backdrop-filter 320ms cubic-bezier(0.2, 0.85, 0.3, 1);
+}
+
+.download-flow-modal.is-open .download-flow-backdrop {
+  opacity: 1;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
@@ -2586,15 +2621,22 @@ body.guess-win-state .guess-minimal-card {
   position: relative;
   z-index: 2;
   pointer-events: auto;
-  width: min(720px, 100%);
+  width: min(440px, 100%);
   max-height: calc(100vh - 40px);
   overflow: auto;
-  padding: clamp(22px, 3vw, 30px);
+  padding: 56px 24px 24px;
   border-radius: 28px;
   background: linear-gradient(180deg, rgba(18, 22, 45, 0.98), rgba(9, 12, 26, 0.96));
   border: 1px solid rgba(95, 251, 255, 0.16);
   box-shadow: var(--shadow), 0 0 60px rgba(95, 251, 255, 0.14);
-  animation: modalSlideIn 340ms cubic-bezier(0.2, 0.85, 0.3, 1) both;
+  opacity: 0;
+  transform: translateY(24px) scale(0.94);
+  transition: transform 320ms cubic-bezier(0.2, 0.85, 0.3, 1), opacity 320ms cubic-bezier(0.2, 0.85, 0.3, 1);
+}
+
+.download-flow-modal.is-open .download-flow-dialog {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .download-flow-close {
@@ -2647,7 +2689,7 @@ body.guess-win-state .guess-minimal-card {
 }
 
 .download-flow-body {
-  margin-top: 18px;
+  margin-top: 0;
 }
 
 .download-step-card {
@@ -2697,6 +2739,27 @@ body.guess-win-state .guess-minimal-card {
   min-height: 46px;
 }
 
+.download-next-button {
+  position: relative;
+  overflow: hidden;
+  animation: nextButtonBreathe 2.2s ease-in-out infinite;
+}
+
+.download-next-button::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(115deg, transparent 22%, rgba(255, 255, 255, 0.42) 50%, transparent 78%);
+  transform: translateX(-165%);
+  pointer-events: none;
+  animation: nextButtonSweep 2.8s ease-in-out infinite;
+}
+
+.download-next-button:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
 .download-progress-shell {
   display: grid;
   gap: 10px;
@@ -2740,6 +2803,32 @@ body.guess-win-state .guess-minimal-card {
 
 .download-flow-status.is-good {
   color: var(--green);
+}
+
+.download-result-details {
+  border: 1px solid rgba(95, 251, 255, 0.12);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.download-result-details summary {
+  cursor: pointer;
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.download-result-details summary:hover {
+  color: var(--cyan);
+}
+
+.download-result-details-body {
+  display: grid;
+  gap: 8px;
+  padding: 0 10px 10px;
 }
 
 .download-result.is-compact {
@@ -3449,6 +3538,26 @@ body.ip-horror-mode .ip-horror-shell .cta-button:hover {
   }
 }
 
+@keyframes nextButtonBreathe {
+  0%,
+  100% {
+    box-shadow: 0 12px 34px rgba(95, 251, 255, 0.22);
+  }
+  50% {
+    box-shadow: 0 14px 38px rgba(95, 251, 255, 0.34);
+  }
+}
+
+@keyframes nextButtonSweep {
+  0%,
+  72% {
+    transform: translateX(-165%);
+  }
+  100% {
+    transform: translateX(165%);
+  }
+}
+
 @keyframes roastDots {
   0% { transform: translateY(0); opacity: 0.3; }
   25% { opacity: 0.6; }
@@ -3886,7 +3995,7 @@ body.ip-horror-mode .ip-horror-shell .cta-button:hover {
 
   .download-flow-dialog {
     max-height: calc(100vh - 28px);
-    padding: 20px 18px;
+    padding: 50px 18px 20px;
     border-radius: 24px;
   }
 
