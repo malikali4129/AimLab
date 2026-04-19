@@ -1,0 +1,20 @@
+Place your shared link preview images here!
+
+Each HTML file now expects its own specific preview image named exactly after the HTML file name.
+
+Required Files (Recommended size: 1200 x 630 pixels, Format: PNG):
+- about.png
+- birthday.png
+- download-speed.png
+- gpa-calculator.png
+- guess-number.png
+- index.png
+- life-progress-tracker.png
+- life-stats.png
+- mind-reader.png
+- password-checker.png
+- roaster.png
+- websites.png
+- wheel.png
+
+These images will be shown on platforms like iMessage, Twitter, Facebook, Discord, Slack, etc., whenever you share a link to specific tools.
