@@ -20,11 +20,16 @@
 
 * {
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
   scroll-behavior: smooth;
   background-color: #030308;
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 body {
@@ -38,7 +43,24 @@ body {
     radial-gradient(circle at top right, rgba(95, 251, 255, 0.14), transparent 22%),
     linear-gradient(135deg, #030308 0%, #07081a 42%, #04050b 100%);
   background-attachment: fixed;
+  max-width: 100vw;
   overflow-x: hidden;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+input,
+textarea,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 body.birthday-fixed {
@@ -204,14 +226,16 @@ input {
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: linear-gradient(180deg, rgba(18, 22, 45, 0.88), rgba(10, 12, 26, 0.92));
+  background: linear-gradient(180deg, rgba(18, 22, 45, 0.92), rgba(10, 12, 26, 0.96));
   border: 1px solid var(--stroke);
   border-radius: 20px;
   box-shadow: var(--shadow);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  position: relative;
-  z-index: 100;
+  position: sticky;
+  top: max(10px, env(safe-area-inset-top, 0px));
+  z-index: 1000;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .header-left {
