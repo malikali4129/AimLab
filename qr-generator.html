@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator | AIM LAB</title>
+  <meta name="description" content="Create stylish QR codes with logos, gradients, dot styles, and design templates. Supports Text, URL, Wi-Fi, Email, Phone, SMS, and vCard." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <meta property="og:title" content="QR Code Generator | AIM LAB" />
+  <meta property="og:description" content="Create stylish QR codes with logos, gradients, dot styles, and design templates." />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="QR Code Generator | AIM LAB" />
+  <meta name="twitter:description" content="Create stylish QR codes with logos, gradients, dot styles, and design templates." />
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <div class="particles" id="particles" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <header class="topbar" data-reveal>
+      <div class="header-left">
+        <span class="module-icon">📱</span>
+        <h1 class="module-title">QR Generator</h1>
+      </div>
+      <div class="header-right">
+        <nav class="header-shortcuts" aria-label="Quick modules"></nav>
+        <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="menu-dropdown" id="menu-dropdown" data-reveal></nav>
+
+    <main class="stage feature-page">
+      <section class="feature-shell glass-card" data-reveal>
+        <div class="feature-copy">
+          <p class="status-line"><span class="status-dot"></span> QR engine ready</p>
+          <h2>All-in-One QR Code Generator</h2>
+          <p class="subtitle">Create stylish, scannable QR codes for any use case — with logos, gradients, and design templates.</p>
+        </div>
+        <div id="qr-generator-module" class="module-root"></div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/qr-code-styling@1.6.0/lib/qr-code-styling.js"></script>
+  <script src="modules/qrGenerator.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

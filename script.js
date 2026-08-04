@@ -12,6 +12,7 @@ const lifeStatsModuleRoot = document.getElementById("life-stats-module");
 const guessNumberModuleRoot = document.getElementById("guess-number-module");
 const mindReaderModuleRoot = document.getElementById("mind-reader-module");
 const websitesModuleRoot = document.getElementById("websites-module");
+const qrGeneratorModuleRoot = document.getElementById("qr-generator-module");
 const moduleVersion = document.getElementById("module-version");
 const menuBtn = document.getElementById("menu-btn");
 const menuDropdown = document.getElementById("menu-dropdown");
@@ -112,6 +113,14 @@ const MODULE_REGISTRY = [
     menuTitle: "Websites",
     homeTitle: "Websites Directory",
     homeDescription: "Browse useful websites with text-based search and category filters"
+  },
+  {
+    href: "qr-generator.html",
+    icon: "📱",
+    shortTitle: "QR",
+    menuTitle: "QR Generator",
+    homeTitle: "QR Code Generator",
+    homeDescription: "Create stylish QR codes with logos, gradients, and design templates"
   },
   {
     href: "about.html",
@@ -392,6 +401,9 @@ if (window.initMindReader && mindReaderModuleRoot) {
 }
 if (window.initWebsites && websitesModuleRoot) {
   window.initWebsites(websitesModuleRoot);
+}
+if (window.initQrGenerator && qrGeneratorModuleRoot) {
+  window.initQrGenerator(qrGeneratorModuleRoot);
 }
 setupMobileMenu();
 setupPageSwitchTransitions();
