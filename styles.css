@@ -25,7 +25,6 @@
 html {
   scroll-behavior: smooth;
   background-color: #030308;
-  overscroll-behavior-y: none;
 }
 
 body {
@@ -40,11 +39,6 @@ body {
     linear-gradient(135deg, #030308 0%, #07081a 42%, #04050b 100%);
   background-attachment: fixed;
   overflow-x: hidden;
-}
-
-body.menu-open {
-  overflow: hidden;
-  touch-action: none;
 }
 
 body.birthday-fixed {
@@ -187,7 +181,7 @@ input {
   z-index: 1;
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding-top: max(96px, calc(86px + env(safe-area-inset-top, 0px)));
+  padding-top: max(20px, calc(12px + env(safe-area-inset-top, 0px)));
   padding-bottom: max(48px, calc(32px + env(safe-area-inset-bottom, 0px)));
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
@@ -216,14 +210,8 @@ input {
   box-shadow: var(--shadow);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
-  position: fixed;
-  top: max(14px, calc(10px + env(safe-area-inset-top, 0px)));
-  left: max(16px, calc((100vw - 1200px) / 2));
-  right: max(16px, calc((100vw - 1200px) / 2));
-  width: auto;
-  max-width: 1200px;
-  z-index: 1000;
-  transform: translateZ(0);
+  position: relative;
+  z-index: 100;
 }
 
 .header-left {
@@ -363,12 +351,12 @@ input {
 }
 
 .menu-dropdown {
-  position: fixed;
-  top: max(78px, calc(72px + env(safe-area-inset-top, 0px)));
-  right: max(16px, calc((100vw - 1200px) / 2));
+  position: absolute;
+  top: max(80px, calc(72px + env(safe-area-inset-top, 0px)));
+  right: 0;
   left: auto;
   width: 260px;
-  max-height: calc(100vh - 100px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  max-height: calc(100vh - 100px);
   overflow-y: auto;
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
@@ -400,11 +388,11 @@ input {
 
 @media (max-width: 640px) {
   .menu-dropdown {
-    top: max(74px, calc(68px + env(safe-area-inset-top, 0px)));
-    left: max(16px, calc(16px + env(safe-area-inset-left, 0px)));
-    right: max(16px, calc(16px + env(safe-area-inset-right, 0px)));
-    width: auto;
-    max-height: calc(100dvh - 86px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+    top: max(78px, calc(70px + env(safe-area-inset-top, 0px)));
+    left: 0;
+    right: 0;
+    width: 100%;
+    max-height: calc(100dvh - 90px);
     transform-origin: top center;
   }
 
