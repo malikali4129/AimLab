@@ -301,12 +301,14 @@ function setupMobileMenu() {
     menuDropdown.classList.remove("open");
     menuBtn.classList.remove("active");
     menuBtn.setAttribute("aria-expanded", "false");
+    document.body.classList.remove("menu-open");
   }
 
   function openMenu() {
     menuDropdown.classList.add("open");
     menuBtn.classList.add("active");
     menuBtn.setAttribute("aria-expanded", "true");
+    document.body.classList.add("menu-open");
   }
 
   function toggleMenu(event) {
