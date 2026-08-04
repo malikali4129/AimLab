@@ -152,6 +152,7 @@ function initQrGenerator(root) {
   let currentType = "text";
   let logoDataUrl = null;
   let qrInstance = null;
+  let lastQrData  = null;  // cached for high-res download
 
   /* ---- Inline styles for the module ---- */
   const style = document.createElement("style");
@@ -456,6 +457,119 @@ function initQrGenerator(root) {
         order: -1;
       }
     }
+
+    /* Preview All Styles */
+    .qr-preview-all-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .qr-preview-all-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 20px;
+      border-radius: var(--radius-sm);
+      border: 1.5px solid var(--violet);
+      background: rgba(157, 125, 255, 0.08);
+      color: var(--violet);
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 200ms ease;
+    }
+    .qr-preview-all-btn:hover {
+      background: rgba(157, 125, 255, 0.18);
+      color: var(--text);
+    }
+    .qr-preview-all-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+    .qr-preview-all-panel {
+      display: none;
+    }
+    .qr-preview-all-panel.open {
+      display: block;
+    }
+    .qr-preview-all-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin: 0 0 14px;
+    }
+    .qr-preview-all-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--stroke) transparent;
+    }
+    .qr-preview-all-grid::-webkit-scrollbar { width: 5px; }
+    .qr-preview-all-grid::-webkit-scrollbar-thumb {
+      background: var(--stroke);
+      border-radius: 4px;
+    }
+    .qr-style-card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 10px 10px;
+      border-radius: var(--radius-md);
+      border: 1.5px solid var(--stroke);
+      background: rgba(255,255,255,0.03);
+      cursor: pointer;
+      transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+      overflow: hidden;
+    }
+    .qr-style-card:hover {
+      border-color: var(--cyan);
+      background: rgba(95, 251, 255, 0.05);
+      transform: translateY(-2px);
+    }
+    .qr-style-card.selected {
+      border-color: var(--violet);
+      background: rgba(157, 125, 255, 0.1);
+    }
+    .qr-style-card canvas,
+    .qr-style-card svg {
+      border-radius: 8px;
+      display: block;
+      max-width: 100%;
+    }
+    .qr-style-card-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.3;
+    }
+    .qr-style-card-badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: var(--violet);
+      color: #fff;
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 999px;
+      display: none;
+    }
+    .qr-style-card.selected .qr-style-card-badge { display: block; }
+    .qr-preview-loading {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 20px;
+    }
   `;
   document.head.appendChild(style);
 
@@ -590,10 +704,22 @@ function initQrGenerator(root) {
 
       <hr class="qr-divider" />
 
+      <!-- Preview All Styles -->
+      <div class="qr-preview-all-header">
+        <p class="qr-label" style="margin:0">Design &amp; Style</p>
+        <button type="button" class="qr-preview-all-btn" id="qr-preview-all-btn" disabled>
+          🎨 Preview All Styles
+        </button>
+      </div>
+
+      <!-- Preview All panel -->
+      <div class="qr-preview-all-panel" id="qr-preview-all-panel">
+        <p class="qr-preview-all-note">All template × dot style combinations for your current input. Click a card to apply that style.</p>
+        <div class="qr-preview-all-grid" id="qr-preview-all-grid"></div>
+      </div>
+
       <!-- Design section -->
       <div>
-        <p class="qr-label" style="margin:0 0 10px">Design &amp; Style</p>
-
         <!-- Templates -->
         <div class="qr-templates" aria-label="Design templates">
           ${QR_TEMPLATES.map(t => `
@@ -678,7 +804,7 @@ function initQrGenerator(root) {
 
           <!-- Size slider -->
           <div class="qr-field">
-            <label class="qr-label" for="qr-size-slider">QR size</label>
+            <label class="qr-label" for="qr-size-slider">Download resolution</label>
             <div class="qr-size-row">
               <input id="qr-size-slider" type="range" min="128" max="1024" step="32" value="300" />
               <span class="qr-size-label" id="qr-size-display">300 px</span>
@@ -723,17 +849,20 @@ function initQrGenerator(root) {
   `;
 
   /* ---- Wire up references ---- */
-  const tabBtns      = [...root.querySelectorAll(".qr-type-tab")];
-  const forms        = [...root.querySelectorAll(".qr-type-form")];
-  const templateBtns = [...root.querySelectorAll(".qr-template-btn")];
-  const generateBtn  = root.querySelector("#qr-generate-btn");
-  const dlPng        = root.querySelector("#qr-dl-png");
-  const dlJpeg       = root.querySelector("#qr-dl-jpeg");
-  const dlSvg        = root.querySelector("#qr-dl-svg");
-  const statusEl     = root.querySelector("#qr-status");
-  const previewBox   = root.querySelector("#qr-preview-box");
-  const canvasArea   = root.querySelector("#qr-canvas-area");
-  const placeholder  = root.querySelector("#qr-placeholder");
+  const tabBtns         = [...root.querySelectorAll(".qr-type-tab")];
+  const forms           = [...root.querySelectorAll(".qr-type-form")];
+  const templateBtns    = [...root.querySelectorAll(".qr-template-btn")];
+  const generateBtn     = root.querySelector("#qr-generate-btn");
+  const dlPng           = root.querySelector("#qr-dl-png");
+  const dlJpeg          = root.querySelector("#qr-dl-jpeg");
+  const dlSvg           = root.querySelector("#qr-dl-svg");
+  const statusEl        = root.querySelector("#qr-status");
+  const previewBox      = root.querySelector("#qr-preview-box");
+  const canvasArea      = root.querySelector("#qr-canvas-area");
+  const placeholder     = root.querySelector("#qr-placeholder");
+  const previewAllBtn   = root.querySelector("#qr-preview-all-btn");
+  const previewAllPanel = root.querySelector("#qr-preview-all-panel");
+  const previewAllGrid  = root.querySelector("#qr-preview-all-grid");
 
   const fgColor      = root.querySelector("#qr-fg-color");
   const fgHex        = root.querySelector("#qr-fg-hex");
@@ -781,6 +910,7 @@ function initQrGenerator(root) {
     };
   }
 
+  // Build QR options; size controls canvas dimensions.
   function getQrOptions(data, size) {
     const useGradient = gradToggle.checked;
     const dotsOptions = useGradient
@@ -918,13 +1048,15 @@ function initQrGenerator(root) {
       return;
     }
 
-    const size = parseInt(sizeSlider.value, 10);
-    const options = getQrOptions(data, size);
-
     if (typeof QRCodeStyling === "undefined") {
       setStatus("QR library failed to load. Check your connection.", "err");
       return;
     }
+
+    lastQrData = data;  // store for download
+    // Preview always renders at a fixed 300px — slider only affects download resolution
+    const PREVIEW_SIZE = 300;
+    const options = getQrOptions(data, PREVIEW_SIZE);
 
     setStatus("Generating…", "");
     generateBtn.disabled = true;
@@ -949,23 +1081,177 @@ function initQrGenerator(root) {
   });
 
   /* ---- Download handlers ---- */
-  dlPng.addEventListener("click", () => {
-    if (!qrInstance) return;
-    qrInstance.download({ name: "qr-code", extension: "png" });
-    setStatus("PNG downloaded.", "ok");
-  });
+  // Downloads use a fresh off-screen QRCodeStyling at the slider resolution
+  // so the on-page preview stays at its fixed 300px display size.
+  function downloadHighRes(extension) {
+    if (!lastQrData) return;
+    const dlSize = parseInt(sizeSlider.value, 10);
+    const opts   = getQrOptions(lastQrData, dlSize);
+    try {
+      const hiRes = new QRCodeStyling(opts);
+      hiRes.download({ name: "qr-code", extension });
+      setStatus(`${extension.toUpperCase()} downloaded at ${dlSize}px.`, "ok");
+    } catch {
+      setStatus("Download failed.", "err");
+    }
+  }
 
-  dlJpeg.addEventListener("click", () => {
-    if (!qrInstance) return;
-    qrInstance.download({ name: "qr-code", extension: "jpeg" });
-    setStatus("JPEG downloaded.", "ok");
-  });
+  dlPng.addEventListener("click",  () => downloadHighRes("png"));
+  dlJpeg.addEventListener("click", () => downloadHighRes("jpeg"));
+  dlSvg.addEventListener("click",  () => downloadHighRes("svg"));
 
-  dlSvg.addEventListener("click", () => {
-    if (!qrInstance) return;
-    qrInstance.download({ name: "qr-code", extension: "svg" });
-    setStatus("SVG downloaded.", "ok");
-  });
+  /* ---- Preview All Styles ---- */
+  const DOT_STYLES = ["square", "dots", "rounded", "classy", "classy-rounded", "extra-rounded"];
+  const CORNER_FOR_DOT = {
+    "square": "square",
+    "dots": "dot",
+    "rounded": "extra-rounded",
+    "classy": "extra-rounded",
+    "classy-rounded": "extra-rounded",
+    "extra-rounded": "extra-rounded"
+  };
+  let selectedCardEl = null;
+  let previewAllOpen = false;
+
+  function buildPreviewOptions(data, tpl, dotType) {
+    const cornerType = CORNER_FOR_DOT[dotType] || "square";
+    const dotsOptions = tpl.gradient
+      ? {
+          type: dotType,
+          gradient: {
+            type: tpl.gradientType || "linear",
+            rotation: 0,
+            colorStops: [
+              { offset: 0, color: tpl.dotsColor },
+              { offset: 1, color: tpl.dotsColor2 || tpl.dotsColor }
+            ]
+          }
+        }
+      : { type: dotType, color: tpl.dotsColor };
+
+    const opts = {
+      width: 130,
+      height: 130,
+      data,
+      dotsOptions,
+      backgroundOptions: { color: tpl.bgColor },
+      cornersSquareOptions: { type: cornerType, color: tpl.dotsColor },
+      cornersDotOptions: { color: tpl.dotsColor },
+      qrOptions: { errorCorrectionLevel: "M" }
+    };
+
+    if (logoDataUrl) {
+      opts.image = logoDataUrl;
+      opts.imageOptions = { crossOrigin: "anonymous", margin: 3, imageSize: 0.28 };
+      opts.qrOptions.errorCorrectionLevel = "H";
+    }
+
+    return opts;
+  }
+
+  function applyStyleFromCard(tpl, dotType) {
+    // Apply template base settings
+    fgColor.value = tpl.dotsColor;
+    fgHex.textContent = tpl.dotsColor;
+    bgColor.value = tpl.bgColor;
+    bgHex.textContent = tpl.bgColor;
+    dotStyle.value = dotType;
+    cornerStyle.value = CORNER_FOR_DOT[dotType] || "square";
+    gradToggle.checked = tpl.gradient || false;
+    gradExtra.classList.toggle("visible", tpl.gradient || false);
+    if (tpl.gradient && tpl.dotsColor2) {
+      fgColor2.value = tpl.dotsColor2;
+      fg2Hex.textContent = tpl.dotsColor2;
+      gradType.value = tpl.gradientType || "linear";
+    }
+    setStatus(`Style applied: ${tpl.label} / ${dotType}`, "ok");
+  }
+
+  async function previewAllStyles() {
+    const data = buildQrData(currentType, getFields());
+    if (!data.trim()) {
+      setStatus("Fill in the input fields first, then use Preview All Styles.", "warn");
+      return;
+    }
+    if (typeof QRCodeStyling === "undefined") {
+      setStatus("QR library failed to load.", "err");
+      return;
+    }
+
+    // Toggle open/close
+    previewAllOpen = !previewAllOpen;
+    previewAllPanel.classList.toggle("open", previewAllOpen);
+    previewAllBtn.textContent = previewAllOpen ? "🎨 Hide Style Previews" : "🎨 Preview All Styles";
+
+    if (!previewAllOpen) return;
+
+    // Show loading
+    previewAllGrid.innerHTML = `<div class="qr-preview-loading">Generating previews… (${QR_TEMPLATES.length * DOT_STYLES.length} styles)</div>`;
+    selectedCardEl = null;
+
+    // Small delay so the DOM paints the loading state before we hammer the canvas API
+    await new Promise(r => setTimeout(r, 30));
+
+    previewAllGrid.innerHTML = "";
+
+    for (const tpl of QR_TEMPLATES) {
+      for (const dotType of DOT_STYLES) {
+        const card = document.createElement("div");
+        card.className = "qr-style-card";
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("title", `${tpl.label} · ${dotType} — click to apply`);
+
+        const badge = document.createElement("span");
+        badge.className = "qr-style-card-badge";
+        badge.textContent = "✓";
+        card.appendChild(badge);
+
+        const qrMount = document.createElement("div");
+        card.appendChild(qrMount);
+
+        const label = document.createElement("div");
+        label.className = "qr-style-card-label";
+        label.textContent = `${tpl.label}\n${dotType}`;
+        label.style.whiteSpace = "pre";
+        card.appendChild(label);
+
+        previewAllGrid.appendChild(card);
+
+        try {
+          const opts = buildPreviewOptions(data, tpl, dotType);
+          const qr = new QRCodeStyling(opts);
+          qr.append(qrMount);
+        } catch {
+          qrMount.innerHTML = `<div style="width:130px;height:130px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:0.72rem">Error</div>`;
+        }
+
+        // Capture tpl/dotType for click handler
+        const capturedTpl = tpl;
+        const capturedDot = dotType;
+        const handleSelect = () => {
+          if (selectedCardEl) selectedCardEl.classList.remove("selected");
+          card.classList.add("selected");
+          selectedCardEl = card;
+          applyStyleFromCard(capturedTpl, capturedDot);
+          // Scroll to preview area smoothly
+          root.querySelector(".qr-output-area")?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        };
+        card.addEventListener("click", handleSelect);
+        card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handleSelect(); } });
+      }
+    }
+  }
+
+  previewAllBtn.addEventListener("click", previewAllStyles);
+
+  // Enable preview-all button once the main Generate runs
+  const _originalGenClick = generateBtn.onclick;
+  function enablePreviewAll() {
+    previewAllBtn.disabled = false;
+  }
+  // Watch generate button click
+  generateBtn.addEventListener("click", enablePreviewAll, { once: false });
 }
 
 window.initQrGenerator = initQrGenerator;
