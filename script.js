@@ -354,7 +354,7 @@ function setupPageSwitchTransitions() {
     }
 
     const href = link.getAttribute("href");
-    if (!href || href.startsWith("#") || link.hasAttribute("download") || link.target === "_blank") {
+    if (!href || href.startsWith("#") || href.startsWith("javascript:") || link.hasAttribute("download") || link.target === "_blank") {
       return;
     }
 
@@ -376,8 +376,8 @@ function setupPageSwitchTransitions() {
     document.body.classList.add("page-transition-out");
 
     window.setTimeout(() => {
-      window.location.href = destination.href;
-    }, 230);
+      window.location.href = href;
+    }, 200);
   });
 
   window.addEventListener("pageshow", (event) => {
