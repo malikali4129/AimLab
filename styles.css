@@ -178,7 +178,10 @@ input {
   z-index: 1;
   width: min(1200px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 20px 0 48px;
+  padding-top: max(20px, calc(12px + env(safe-area-inset-top, 0px)));
+  padding-bottom: max(48px, calc(32px + env(safe-area-inset-bottom, 0px)));
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
   transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease;
 }
 
@@ -205,7 +208,7 @@ input {
   backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
   position: sticky;
-  top: 14px;
+  top: max(14px, calc(10px + env(safe-area-inset-top, 0px)));
   z-index: 100;
 }
 
@@ -347,10 +350,10 @@ input {
 
 .menu-dropdown {
   position: fixed;
-  top: 76px;
+  top: max(76px, calc(72px + env(safe-area-inset-top, 0px)));
   right: max(16px, calc((100vw - 1200px) / 2 + 16px));
   width: 260px;
-  max-height: calc(100vh - 100px);
+  max-height: calc(100vh - 100px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
   background: rgba(10, 13, 28, 0.95);
   backdrop-filter: blur(28px);
@@ -379,11 +382,11 @@ input {
 
 @media (max-width: 640px) {
   .menu-dropdown {
-    top: 74px;
-    left: 16px;
-    right: 16px;
+    top: max(74px, calc(68px + env(safe-area-inset-top, 0px)));
+    left: max(16px, calc(16px + env(safe-area-inset-left, 0px)));
+    right: max(16px, calc(16px + env(safe-area-inset-right, 0px)));
     width: auto;
-    max-height: calc(100dvh - 90px);
+    max-height: calc(100dvh - 86px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
   }
 
   .header-shortcuts {

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#07081a"/>
+      <stop offset="50%" stop-color="#0d1021"/>
+      <stop offset="100%" stop-color="#030308"/>
+    </linearGradient>
+    <linearGradient id="cyanViolet" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5ffbff"/>
+      <stop offset="100%" stop-color="#9d7dff"/>
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="url(#cyanViolet)" stroke-width="4" stroke-opacity="0.3"/>
+
+  <!-- Glowing Hexagon / Lab Emblem -->
+  <polygon points="256,96 384,170 384,318 256,392 128,318 128,170" fill="none" stroke="url(#cyanViolet)" stroke-width="16" stroke-linejoin="round" filter="url(#glow)"/>
+
+  <!-- Inner Aim Crosshair Dot -->
+  <circle cx="256" cy="244" r="28" fill="#5ffbff" filter="url(#glow)"/>
+
+  <!-- Text -->
+  <text x="256" y="440" font-family="'Orbitron', 'Poppins', sans-serif" font-size="44" font-weight="800" fill="#e9edff" text-anchor="middle" letter-spacing="6">AIM LAB</text>
+</svg>
