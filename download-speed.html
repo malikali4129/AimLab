@@ -9,13 +9,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
-  <meta property="og:title" content="Download Speed Calculator | Fake AI Lab" />
-  <meta property="og:description" content="Choose Manual or Auto mode to run a guided download-speed popup with file size, speed, and results." />
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <meta property="og:title" content="Download Speed Calculator | AIM LAB" />
+  <meta property="og:description" content="Calculate real-world file download time across 25+ internet speeds with progress visuals." />
   <meta property="og:image" content="assets/preview/download-speed.png" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Download Speed Calculator | Fake AI Lab" />
-  <meta name="twitter:description" content="Choose Manual or Auto mode to run a guided download-speed popup with file size, speed, and results." />
+  <meta name="twitter:title" content="Download Speed Calculator | AIM LAB" />
+  <meta name="twitter:description" content="Calculate real-world file download time across 25+ internet speeds with progress visuals." />
   <meta name="twitter:image" content="assets/preview/download-speed.png" />
 </head>
 <body>
@@ -26,8 +27,8 @@
   <div class="app-shell">
     <header class="topbar" data-reveal>
       <div class="header-left">
-        <span class="module-icon">⚡</span>
-        <h1 class="module-title">Download</h1>
+        <span class="module-icon"><i data-lucide="zap"></i></span>
+        <h1 class="module-title">Download Speed</h1>
       </div>
       <div class="header-right">
         <nav class="header-shortcuts" aria-label="Quick modules">
@@ -41,6 +42,7 @@
           <a href="life-progress-tracker.html" class="shortcut-icon" title="Life Progress Tracker">⏳</a>
         </nav>
         <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+          <span></span>
           <span></span>
           <span></span>
         </button>

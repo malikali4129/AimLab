@@ -1,5 +1,5 @@
 const DEFAULT_WHEEL_SETS = [
-  ["Ali", "Hadia", "Hafeez", "Alisha", "Subhan", "Sikandar"]
+  ["Ali", "Imran", "Malik"]
 ];
 
 const WHEEL_THEMES = [

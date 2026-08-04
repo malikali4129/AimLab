@@ -22,21 +22,21 @@ let isNavigating = false;
 const MODULE_REGISTRY = [
   {
     href: "index.html",
-    icon: "🏠",
+    iconName: "home",
     shortTitle: "Home",
     menuTitle: "Home"
   },
-  // {
-  //   href: "birthday.html",
-  //   icon: "🎂",
-  //   shortTitle: "Birthday",
-  //   menuTitle: "Birthday",
-  //   homeTitle: "Birthday Calculator",
-  //   homeDescription: "Find your age and next birthday"
-  // },
+  {
+    href: "birthday.html",
+    iconName: "cake",
+    shortTitle: "Birthday",
+    menuTitle: "Birthday",
+    homeTitle: "Birthday Calculator",
+    homeDescription: "Find your age and next birthday"
+  },
   {
     href: "download-speed.html",
-    icon: "⚡",
+    iconName: "zap",
     shortTitle: "Download",
     menuTitle: "Download",
     homeTitle: "Download Speed Calculator",
@@ -44,7 +44,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "password-checker.html",
-    icon: "🔐",
+    iconName: "shield-check",
     shortTitle: "Password",
     menuTitle: "Password",
     homeTitle: "Password Strength Checker",
@@ -52,7 +52,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "gpa-calculator.html",
-    icon: "🎓",
+    iconName: "graduation-cap",
     shortTitle: "GPA",
     menuTitle: "GPA",
     homeTitle: "GPA Calculator",
@@ -60,7 +60,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "roaster.html",
-    icon: "🔥",
+    iconName: "flame",
     shortTitle: "Roaster",
     menuTitle: "Roaster",
     homeTitle: "Roaster Module",
@@ -68,23 +68,23 @@ const MODULE_REGISTRY = [
   },
   {
     href: "wheel.html",
-    icon: "🎡",
+    iconName: "dices",
     shortTitle: "Wheel",
     menuTitle: "Wheel Picker",
     homeTitle: "Wheel Picker",
     homeDescription: "Spin two name wheels and pick a winner"
   },
-  // {
-  //   href: "guess-number.html",
-  //   icon: "🎯",
-  //   shortTitle: "Guess",
-  //   menuTitle: "Guess Number",
-  //   homeTitle: "Guess Number Game",
-  //   homeDescription: "Play your classic school C game in web module style"
-  // },
+  {
+    href: "guess-number.html",
+    iconName: "target",
+    shortTitle: "Guess",
+    menuTitle: "Guess Number",
+    homeTitle: "Guess Number Game",
+    homeDescription: "Play your classic school C game in web module style"
+  },
   {
     href: "life-progress-tracker.html",
-    icon: "⏳",
+    iconName: "hourglass",
     shortTitle: "Tracker",
     menuTitle: "Life Tracker",
     homeTitle: "Life Progress Tracker",
@@ -92,7 +92,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "life-stats.html",
-    icon: "🧬",
+    iconName: "activity",
     shortTitle: "Stats",
     menuTitle: "Life Stats",
     homeTitle: "Life Stats",
@@ -100,7 +100,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "mind-reader.html",
-    icon: "🌐",
+    iconName: "brain",
     shortTitle: "Mind Reader",
     menuTitle: "Mind Reader",
     homeTitle: "Mind Reader",
@@ -108,7 +108,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "websites.html",
-    icon: "🌍",
+    iconName: "globe",
     shortTitle: "Websites",
     menuTitle: "Websites",
     homeTitle: "Websites Directory",
@@ -116,7 +116,7 @@ const MODULE_REGISTRY = [
   },
   {
     href: "qr-generator.html",
-    icon: "📱",
+    iconName: "qr-code",
     shortTitle: "QR",
     menuTitle: "QR Generator",
     homeTitle: "QR Code Generator",
@@ -124,11 +124,11 @@ const MODULE_REGISTRY = [
   },
   {
     href: "about.html",
-    icon: "👤",
+    iconName: "user",
     shortTitle: "About",
     menuTitle: "About Me",
     homeTitle: "About Me",
-    homeDescription: "Sample bio section with a functional contact form"
+    homeDescription: "Bio section with a functional contact form"
   }
 ];
 
@@ -175,17 +175,24 @@ async function loadModuleVersion() {
 }
 
 function renderSharedNavigation() {
+  const currentPath = window.location.pathname;
   const shortcutNav = document.querySelector(".header-shortcuts");
   if (shortcutNav) {
-    shortcutNav.innerHTML = MODULE_REGISTRY.map(
-      (module) => `<a href="${module.href}" class="shortcut-icon" title="${module.shortTitle}">${module.icon}</a>`
-    ).join("");
+    shortcutNav.innerHTML = MODULE_REGISTRY.map((module) => {
+      const isActive = currentPath.endsWith(module.href) || (module.href === "index.html" && (currentPath.endsWith("/") || currentPath === ""));
+      return `<a href="${module.href}" class="shortcut-icon ${isActive ? "active" : ""}" title="${module.shortTitle}" aria-label="${module.shortTitle}"><i data-lucide="${module.iconName}"></i></a>`;
+    }).join("");
   }
 
   if (menuDropdown) {
-    menuDropdown.innerHTML = MODULE_REGISTRY.map(
-      (module) => `<a href="${module.href}" class="menu-item">${module.icon} ${module.menuTitle}</a>`
-    ).join("");
+    menuDropdown.innerHTML = MODULE_REGISTRY.map((module) => {
+      const isActive = currentPath.endsWith(module.href) || (module.href === "index.html" && (currentPath.endsWith("/") || currentPath === ""));
+      return `<a href="${module.href}" class="menu-item ${isActive ? "active" : ""}"><i data-lucide="${module.iconName}"></i> ${module.menuTitle}</a>`;
+    }).join("");
+  }
+
+  if (window.lucide && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
   }
 }
 
@@ -200,13 +207,19 @@ function renderHomeCards() {
     .map(
       (module) => `
         <a class="app-card" href="${module.href}" data-reveal>
-          <span class="app-icon">${module.icon}</span>
+          <div class="app-icon-wrapper">
+            <i data-lucide="${module.iconName}"></i>
+          </div>
           <h3>${module.homeTitle}</h3>
           <p>${module.homeDescription}</p>
         </a>
       `
     )
     .join("");
+
+  if (window.lucide && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
+  }
 }
 
 function finishPageTransitions() {
@@ -276,16 +289,25 @@ function setupMobileMenu() {
     menuBtn.setAttribute("aria-expanded", "true");
   }
 
-  menuBtn.addEventListener("click", () => {
+  function toggleMenu(event) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     if (menuDropdown.classList.contains("open")) {
       closeMenu();
     } else {
       openMenu();
     }
-  });
+  }
 
-  menuDropdown.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", closeMenu);
+  menuBtn.addEventListener("click", toggleMenu);
+
+  // Event delegation on menuDropdown links
+  menuDropdown.addEventListener("click", (event) => {
+    if (event.target.closest("a")) {
+      closeMenu();
+    }
   });
 
   document.addEventListener("click", (event) => {
@@ -407,6 +429,10 @@ if (window.initQrGenerator && qrGeneratorModuleRoot) {
 }
 setupMobileMenu();
 setupPageSwitchTransitions();
+
+if (window.lucide && typeof window.lucide.createIcons === "function") {
+  window.lucide.createIcons();
+}
 
 requestAnimationFrame(() => {
   setTimeout(finishPageTransitions, 80);

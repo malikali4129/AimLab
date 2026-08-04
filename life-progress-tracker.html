@@ -9,8 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <meta property="og:title" content="Life Progress Tracker | AIM LAB" />
-  <meta property="og:description" content="Track live progress across clock cycles, annual events, moon phases, and long-horizon milestones." />
+  <meta property="og:description" content="Track time progress across day, week, month, year, moon phases, and life milestones." />
   <meta property="og:image" content="assets/preview/life-progress-tracker.png" />
   <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -26,8 +27,8 @@
   <div class="app-shell">
     <header class="topbar" data-reveal>
       <div class="header-left">
-        <span class="module-icon">⏳</span>
-        <h1 class="module-title">Life Progress Tracker</h1>
+        <span class="module-icon"><i data-lucide="hourglass"></i></span>
+        <h1 class="module-title">Life Tracker</h1>
       </div>
       <div class="header-right">
         <nav class="header-shortcuts" aria-label="Quick modules">
@@ -41,6 +42,7 @@
           <a href="life-progress-tracker.html" class="shortcut-icon" title="Life Progress Tracker">⏳</a>
         </nav>
         <button class="menu-btn" id="menu-btn" aria-label="Open menu" aria-expanded="false">
+          <span></span>
           <span></span>
           <span></span>
         </button>

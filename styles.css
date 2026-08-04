@@ -212,14 +212,221 @@ input {
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 0 1 auto;
   min-width: 0;
 }
 
 .module-icon {
-  font-size: 1.4rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(95, 251, 255, 0.15), rgba(157, 125, 255, 0.15));
+  border: 1px solid rgba(95, 251, 255, 0.25);
+  color: var(--cyan);
   flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(95, 251, 255, 0.2);
+  transition: all 0.25s ease;
+}
+
+.module-icon svg,
+.module-icon [data-lucide] {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.2;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-shortcuts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shortcut-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--muted);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.shortcut-icon svg,
+.shortcut-icon [data-lucide] {
+  width: 17px;
+  height: 17px;
+  stroke-width: 2;
+}
+
+.shortcut-icon:hover {
+  color: var(--cyan);
+  background: rgba(95, 251, 255, 0.12);
+  border-color: rgba(95, 251, 255, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(95, 251, 255, 0.25);
+}
+
+.shortcut-icon.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(95, 251, 255, 0.25), rgba(157, 125, 255, 0.25));
+  border-color: rgba(95, 251, 255, 0.5);
+  box-shadow: 0 0 12px rgba(95, 251, 255, 0.35);
+}
+
+.menu-btn {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(95, 251, 255, 0.2);
+  cursor: pointer;
+  outline: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  z-index: 10000;
+}
+
+.menu-btn:hover {
+  background: rgba(95, 251, 255, 0.14);
+  border-color: rgba(95, 251, 255, 0.45);
+  box-shadow: 0 0 14px rgba(95, 251, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.menu-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: var(--cyan);
+  border-radius: 2px;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, background-color 0.25s ease;
+  transform-origin: center;
+}
+
+/* 3-Line Hamburger to X animation */
+.menu-btn.active {
+  background: rgba(95, 251, 255, 0.2);
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px rgba(95, 251, 255, 0.4);
+}
+
+.menu-btn.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+  background: #ffffff;
+}
+
+.menu-btn.active span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.menu-btn.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+  background: #ffffff;
+}
+
+.menu-dropdown {
+  position: fixed;
+  top: 76px;
+  right: max(16px, calc((100vw - 1200px) / 2 + 16px));
+  width: 260px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+  background: rgba(10, 13, 28, 0.95);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(95, 251, 255, 0.25);
+  border-radius: 20px;
+  padding: 12px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.75), 0 0 35px rgba(95, 251, 255, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  z-index: 9999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-12px) scale(0.95);
+  transition: opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.25s;
+}
+
+.menu-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+@media (max-width: 640px) {
+  .menu-dropdown {
+    top: 74px;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    max-height: calc(100dvh - 90px);
+  }
+
+  .header-shortcuts {
+    display: none;
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--muted);
+  transition: all 0.18s ease;
+}
+
+.menu-item svg,
+.menu-item [data-lucide] {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2;
+  color: var(--cyan);
+  transition: transform 0.2s ease;
+}
+
+.menu-item:hover {
+  color: #ffffff;
+  background: rgba(95, 251, 255, 0.12);
+  transform: translateX(4px);
+}
+
+.menu-item:hover svg,
+.menu-item:hover [data-lucide] {
+  transform: scale(1.15);
+}
+
+.menu-item.active {
+  color: #ffffff;
+  background: linear-gradient(90deg, rgba(95, 251, 255, 0.18), rgba(157, 125, 255, 0.18));
+  border-left: 3px solid var(--cyan);
 }
 
 .module-title {
@@ -874,15 +1081,44 @@ body.page-transition-in .particles {
   box-shadow: var(--shadow), 0 0 30px rgba(95, 251, 255, 0.15);
 }
 
+.app-card .app-icon-wrapper,
 .app-card .app-icon {
-  display: grid;
-  place-items: center;
-  width: 64px;
-  height: 64px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
   border-radius: 20px;
-  background: rgba(95, 251, 255, 0.08);
-  font-size: 2rem;
-  box-shadow: inset 0 0 16px rgba(95, 251, 255, 0.12);
+  background: linear-gradient(135deg, rgba(95, 251, 255, 0.12), rgba(157, 125, 255, 0.14));
+  border: 1px solid rgba(95, 251, 255, 0.22);
+  color: var(--cyan);
+  box-shadow: 0 0 16px rgba(95, 251, 255, 0.15), inset 0 0 12px rgba(95, 251, 255, 0.1);
+  transition: all 0.25s ease;
+}
+
+.app-card .app-icon-wrapper svg,
+.app-card .app-icon-wrapper [data-lucide],
+.app-card .app-icon svg,
+.app-card .app-icon [data-lucide] {
+  width: 28px;
+  height: 28px;
+  stroke-width: 2;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.app-card:hover .app-icon-wrapper,
+.app-card:hover .app-icon {
+  background: linear-gradient(135deg, rgba(95, 251, 255, 0.22), rgba(157, 125, 255, 0.25));
+  border-color: rgba(95, 251, 255, 0.45);
+  box-shadow: 0 0 24px rgba(95, 251, 255, 0.35);
+  color: #ffffff;
+}
+
+.app-card:hover .app-icon-wrapper svg,
+.app-card:hover .app-icon-wrapper [data-lucide],
+.app-card:hover .app-icon svg,
+.app-card:hover .app-icon [data-lucide] {
+  transform: scale(1.15);
 }
 
 .app-card h3 {
