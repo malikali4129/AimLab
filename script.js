@@ -24,7 +24,8 @@ const MODULE_REGISTRY = [
     href: "index.html",
     iconName: "home",
     shortTitle: "Home",
-    menuTitle: "Home"
+    menuTitle: "Home",
+    color: "#5ffbff"
   },
   {
     href: "birthday.html",
@@ -32,7 +33,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Birthday",
     menuTitle: "Birthday",
     homeTitle: "Birthday Calculator",
-    homeDescription: "Find your age and next birthday"
+    homeDescription: "Find your age and next birthday",
+    color: "#ff73d9"
   },
   {
     href: "download-speed.html",
@@ -40,7 +42,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Download",
     menuTitle: "Download",
     homeTitle: "Download Speed Calculator",
-    homeDescription: "Calculate download times"
+    homeDescription: "Calculate download times",
+    color: "#ffd166"
   },
   {
     href: "password-checker.html",
@@ -48,7 +51,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Password",
     menuTitle: "Password",
     homeTitle: "Password Strength Checker",
-    homeDescription: "Check password strength and safety tips"
+    homeDescription: "Check password strength and safety tips",
+    color: "#74f7b3"
   },
   {
     href: "gpa-calculator.html",
@@ -56,7 +60,8 @@ const MODULE_REGISTRY = [
     shortTitle: "GPA",
     menuTitle: "GPA",
     homeTitle: "GPA Calculator",
-    homeDescription: "Calculate semester and cumulative GPA"
+    homeDescription: "Calculate semester and cumulative GPA",
+    color: "#9d7dff"
   },
   {
     href: "roaster.html",
@@ -64,7 +69,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Roaster",
     menuTitle: "Roaster",
     homeTitle: "Roaster Module",
-    homeDescription: "Generate funny roasts with intensity controls"
+    homeDescription: "Generate funny roasts with intensity controls",
+    color: "#ff5252"
   },
   {
     href: "wheel.html",
@@ -72,7 +78,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Wheel",
     menuTitle: "Wheel Picker",
     homeTitle: "Wheel Picker",
-    homeDescription: "Spin two name wheels and pick a winner"
+    homeDescription: "Spin two name wheels and pick a winner",
+    color: "#38ef7d"
   },
   {
     href: "guess-number.html",
@@ -80,7 +87,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Guess",
     menuTitle: "Guess Number",
     homeTitle: "Guess Number Game",
-    homeDescription: "Play your classic school C game in web module style"
+    homeDescription: "Play your classic school C game in web module style",
+    color: "#ff4365"
   },
   {
     href: "life-progress-tracker.html",
@@ -88,7 +96,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Tracker",
     menuTitle: "Life Tracker",
     homeTitle: "Life Progress Tracker",
-    homeDescription: "Track clock cycles, events, moon phases, and long-horizon milestones"
+    homeDescription: "Track clock cycles, events, moon phases, and long-horizon milestones",
+    color: "#4cc9f0"
   },
   {
     href: "life-stats.html",
@@ -96,7 +105,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Stats",
     menuTitle: "Life Stats",
     homeTitle: "Life Stats",
-    homeDescription: "Scroll through live stats calculated from your birth date"
+    homeDescription: "Scroll through live stats calculated from your birth date",
+    color: "#00f5d4"
   },
   {
     href: "mind-reader.html",
@@ -104,7 +114,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Mind Reader",
     menuTitle: "Mind Reader",
     homeTitle: "Mind Reader",
-    homeDescription: "Cinematic oracle story with live geolocation reveal"
+    homeDescription: "Cinematic oracle story with live geolocation reveal",
+    color: "#b5179e"
   },
   {
     href: "websites.html",
@@ -112,7 +123,8 @@ const MODULE_REGISTRY = [
     shortTitle: "Websites",
     menuTitle: "Websites",
     homeTitle: "Websites Directory",
-    homeDescription: "Browse useful websites with text-based search and category filters"
+    homeDescription: "Browse useful websites with text-based search and category filters",
+    color: "#4895ef"
   },
   {
     href: "qr-generator.html",
@@ -120,7 +132,8 @@ const MODULE_REGISTRY = [
     shortTitle: "QR",
     menuTitle: "QR Generator",
     homeTitle: "QR Code Generator",
-    homeDescription: "Create stylish QR codes with logos, gradients, and design templates"
+    homeDescription: "Create stylish QR codes with logos, gradients, and design templates",
+    color: "#a06cd5"
   },
   {
     href: "about.html",
@@ -128,7 +141,8 @@ const MODULE_REGISTRY = [
     shortTitle: "About",
     menuTitle: "About Me",
     homeTitle: "About Me",
-    homeDescription: "Bio section with a functional contact form"
+    homeDescription: "Bio section with a functional contact form",
+    color: "#f72585"
   }
 ];
 
@@ -180,15 +194,21 @@ function renderSharedNavigation() {
   if (shortcutNav) {
     shortcutNav.innerHTML = MODULE_REGISTRY.map((module) => {
       const isActive = currentPath.endsWith(module.href) || (module.href === "index.html" && (currentPath.endsWith("/") || currentPath === ""));
-      return `<a href="${module.href}" class="shortcut-icon ${isActive ? "active" : ""}" title="${module.shortTitle}" aria-label="${module.shortTitle}"><i data-lucide="${module.iconName}"></i></a>`;
+      return `<a href="${module.href}" class="shortcut-icon ${isActive ? "active" : ""}" style="--app-color: ${module.color}" title="${module.shortTitle}" aria-label="${module.shortTitle}"><i data-lucide="${module.iconName}"></i></a>`;
     }).join("");
   }
 
   if (menuDropdown) {
     menuDropdown.innerHTML = MODULE_REGISTRY.map((module) => {
       const isActive = currentPath.endsWith(module.href) || (module.href === "index.html" && (currentPath.endsWith("/") || currentPath === ""));
-      return `<a href="${module.href}" class="menu-item ${isActive ? "active" : ""}"><i data-lucide="${module.iconName}"></i> ${module.menuTitle}</a>`;
+      return `<a href="${module.href}" class="menu-item ${isActive ? "active" : ""}" style="--app-color: ${module.color}"><i data-lucide="${module.iconName}"></i> ${module.menuTitle}</a>`;
     }).join("");
+  }
+
+  const activeModule = MODULE_REGISTRY.find((m) => currentPath.endsWith(m.href));
+  const topModuleIcon = document.querySelector(".topbar .module-icon");
+  if (topModuleIcon && activeModule && activeModule.color) {
+    topModuleIcon.style.setProperty("--app-color", activeModule.color);
   }
 
   if (window.lucide && typeof window.lucide.createIcons === "function") {
@@ -206,7 +226,7 @@ function renderHomeCards() {
   appsGrid.innerHTML = modulesForHome
     .map(
       (module) => `
-        <a class="app-card" href="${module.href}" data-reveal>
+        <a class="app-card" href="${module.href}" style="--app-color: ${module.color}" data-reveal>
           <div class="app-icon-wrapper">
             <i data-lucide="${module.iconName}"></i>
           </div>

@@ -224,11 +224,11 @@ input {
   width: 38px;
   height: 38px;
   border-radius: 12px;
-  background: linear-gradient(135deg, rgba(95, 251, 255, 0.15), rgba(157, 125, 255, 0.15));
-  border: 1px solid rgba(95, 251, 255, 0.25);
-  color: var(--cyan);
+  background: color-mix(in srgb, var(--app-color, var(--cyan)) 15%, transparent);
+  border: 1px solid color-mix(in srgb, var(--app-color, var(--cyan)) 35%, transparent);
+  color: var(--app-color, var(--cyan));
   flex-shrink: 0;
-  box-shadow: 0 0 12px rgba(95, 251, 255, 0.2);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--app-color, var(--cyan)) 25%, transparent);
   transition: all 0.25s ease;
 }
 
@@ -260,7 +260,7 @@ input {
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  color: var(--muted);
+  color: color-mix(in srgb, var(--app-color, var(--cyan)) 75%, #ffffff);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
 }
@@ -273,18 +273,18 @@ input {
 }
 
 .shortcut-icon:hover {
-  color: var(--cyan);
-  background: rgba(95, 251, 255, 0.12);
-  border-color: rgba(95, 251, 255, 0.35);
+  color: var(--app-color, var(--cyan));
+  background: color-mix(in srgb, var(--app-color, var(--cyan)) 18%, transparent);
+  border-color: color-mix(in srgb, var(--app-color, var(--cyan)) 45%, transparent);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(95, 251, 255, 0.25);
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--app-color, var(--cyan)) 30%, transparent);
 }
 
 .shortcut-icon.active {
   color: #ffffff;
-  background: linear-gradient(135deg, rgba(95, 251, 255, 0.25), rgba(157, 125, 255, 0.25));
-  border-color: rgba(95, 251, 255, 0.5);
-  box-shadow: 0 0 12px rgba(95, 251, 255, 0.35);
+  background: color-mix(in srgb, var(--app-color, var(--cyan)) 30%, transparent);
+  border-color: var(--app-color, var(--cyan));
+  box-shadow: 0 0 14px color-mix(in srgb, var(--app-color, var(--cyan)) 45%, transparent);
 }
 
 .menu-btn {
@@ -408,13 +408,13 @@ input {
   width: 18px;
   height: 18px;
   stroke-width: 2;
-  color: var(--cyan);
+  color: var(--app-color, var(--cyan));
   transition: transform 0.2s ease;
 }
 
 .menu-item:hover {
   color: #ffffff;
-  background: rgba(95, 251, 255, 0.12);
+  background: color-mix(in srgb, var(--app-color, var(--cyan)) 16%, transparent);
   transform: translateX(4px);
 }
 
@@ -425,8 +425,8 @@ input {
 
 .menu-item.active {
   color: #ffffff;
-  background: linear-gradient(90deg, rgba(95, 251, 255, 0.18), rgba(157, 125, 255, 0.18));
-  border-left: 3px solid var(--cyan);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--app-color, var(--cyan)) 25%, transparent), transparent);
+  border-left: 3px solid var(--app-color, var(--cyan));
 }
 
 .module-title {
@@ -1077,8 +1077,8 @@ body.page-transition-in .particles {
 
 .app-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(95, 251, 255, 0.32);
-  box-shadow: var(--shadow), 0 0 30px rgba(95, 251, 255, 0.15);
+  border-color: color-mix(in srgb, var(--app-color, var(--cyan)) 40%, transparent);
+  box-shadow: var(--shadow), 0 0 30px color-mix(in srgb, var(--app-color, var(--cyan)) 22%, transparent);
 }
 
 .app-card .app-icon-wrapper,
@@ -1089,10 +1089,10 @@ body.page-transition-in .particles {
   width: 60px;
   height: 60px;
   border-radius: 20px;
-  background: linear-gradient(135deg, rgba(95, 251, 255, 0.12), rgba(157, 125, 255, 0.14));
-  border: 1px solid rgba(95, 251, 255, 0.22);
-  color: var(--cyan);
-  box-shadow: 0 0 16px rgba(95, 251, 255, 0.15), inset 0 0 12px rgba(95, 251, 255, 0.1);
+  background: color-mix(in srgb, var(--app-color, var(--cyan)) 14%, rgba(13, 16, 33, 0.6));
+  border: 1px solid color-mix(in srgb, var(--app-color, var(--cyan)) 32%, transparent);
+  color: var(--app-color, var(--cyan));
+  box-shadow: 0 0 16px color-mix(in srgb, var(--app-color, var(--cyan)) 22%, transparent), inset 0 0 12px color-mix(in srgb, var(--app-color, var(--cyan)) 12%, transparent);
   transition: all 0.25s ease;
 }
 
@@ -1108,9 +1108,9 @@ body.page-transition-in .particles {
 
 .app-card:hover .app-icon-wrapper,
 .app-card:hover .app-icon {
-  background: linear-gradient(135deg, rgba(95, 251, 255, 0.22), rgba(157, 125, 255, 0.25));
-  border-color: rgba(95, 251, 255, 0.45);
-  box-shadow: 0 0 24px rgba(95, 251, 255, 0.35);
+  background: color-mix(in srgb, var(--app-color, var(--cyan)) 28%, transparent);
+  border-color: var(--app-color, var(--cyan));
+  box-shadow: 0 0 28px color-mix(in srgb, var(--app-color, var(--cyan)) 55%, transparent);
   color: #ffffff;
 }
 
